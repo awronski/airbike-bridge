@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>AirBike Wi-Fi setup</title>
+  <style>
+    *{box-sizing:border-box}body{font:16px system-ui;background:#101719;color:#e9edf0;max-width:440px;margin:40px auto;padding:24px;line-height:1.6}
+    h1{font-size:28px;line-height:1.3}label{display:block;margin:20px 0}input,button{font:inherit;padding:12px;width:100%;border:1px solid #526566;border-radius:8px;background:#172124;color:#e9edf0}button{background:#254337;cursor:pointer}button:disabled{opacity:.6;cursor:wait}p{color:#b3c5c9}a{color:#98efc0}[hidden]{display:none!important}
+  </style>
+</head>
+<body>
+  <h1>Connect your ATOM to Wi-Fi</h1>
+  <p>Enter your local 2.4 GHz Wi-Fi details. They stay on the ATOM.</p>
+  <form id="form" action="/wifi" method="post">
+    <label>Wi-Fi name<input name="ssid" required maxlength="32" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"></label>
+    <label>Wi-Fi password<input name="password" type="password" maxlength="64" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"></label>
+    <button>Connect to Wi-Fi</button>
+  </form>
+  <p id="result" role="status" aria-live="polite"></p>
+  <script>
+    const form = document.getElementById('form');
+    const result = document.getElementById('result');
+    const button = form.querySelector('button');
+    let polling = false;
+
+    async function request(url, options = {}) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      try { return await fetch(url, {...options, signal:controller.signal, cache:'no-store'}); }
+      finally { clearTimeout(timeout); }
+    }
+
+    function failed(message) {
+      polling = false;
+      result.textContent = message;
+      button.disabled = false;
+    }
+
+    async function checkConnection(started) {
+      if (!polling) return;
+      if (Date.now() - started >= 60000) {
+        failed('The setup connection was lost. Rejoin the AirBike-Setup Wi-Fi network on this device, reload this page, and try again.');
+        return;
+      }
+      try {
+        const response = await request('/api/setup');
+        if (!response.ok) throw new Error('Status unavailable');
+        const data = await response.json();
+        if (data.connected) {
+          polling = false;
+          form.hidden = true;
+          result.replaceChildren(document.createTextNode('Connected. Switch back to your normal Wi-Fi, then open '));
+          const link = document.createElement('a');
+          link.href = 'http://' + data.ip + '/';
+          link.textContent = link.href;
+          result.append(link, document.createTextNode(' on your Mac. The setup hotspot closes in one minute.'));
+          return;
+        }
+        if (data.phase === 'save_failed') {
+          failed('Connected to Wi-Fi, but the ATOM could not verify saving the details. The setup hotspot will stay open. Enter the password again and retry before unplugging the ATOM.');
+          return;
+        }
+        if (data.failed) {
+          failed('Could not join Wi-Fi. Check the exact name and password, and use a 2.4 GHz network. Your previous saved Wi-Fi details have been kept.');
+          return;
+        }
+        if (data.phase === 'idle') {
+          failed('The ATOM did not receive the settings. Check that this device is connected to AirBike-Setup, then press Connect to Wi-Fi again.');
+          return;
+        }
+        form.querySelector('[name=password]').value = '';
+        result.textContent = 'Joining Wi-Fi. This may take up to 30 seconds…';
+      } catch (_) {
+        result.textContent = 'Waiting for the ATOM. If Wi-Fi disconnects, rejoin AirBike-Setup on this device; this page will keep checking.';
+      }
+      setTimeout(() => checkConnection(started), 1000);
+    }
+
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (button.disabled) return;
+      button.disabled = true;
+      result.textContent = 'Sending Wi-Fi settings…';
+      const started = Date.now();
+      polling = true;
+      let response;
+      try {
+        response = await request('/wifi', {method:'POST', body:new URLSearchParams(new FormData(form))});
+      } catch (_) {
+        result.textContent = 'Checking whether the ATOM received your settings…';
+      }
+      if (response && !response.ok) {
+        let message;
+        try { message = await response.text(); }
+        catch (_) { message = 'The ATOM could not accept the settings. Please try again.'; }
+        failed(message);
+        return;
+      }
+      if (response && response.ok) form.querySelector('[name=password]').value = '';
+      checkConnection(started);
+    });
+  </script>
+</body>
+</html>

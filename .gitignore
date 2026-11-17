@@ -1,0 +1,15 @@
+.venv/
+.cache/
+.pio/
+.pio-core/
+__pycache__/
+backups/
+artifacts/
+design-qa.md
+.env
+.env.*
+!.env.example
+secrets/
+credentials/
+*.log
+.DS_Store
