@@ -7,6 +7,9 @@
 // Source: https://github.com/roelofkl/ha-assault-airbike/blob/main/docs/PROTOCOL.md
 namespace airbike {
 
+// The Assault AirBike Elite console stops advancing this counter at 19.995 km.
+constexpr uint32_t CONSOLE_DISTANCE_LIMIT_M = 19995;
+
 struct Metrics {
     uint16_t elapsed_s = 0;
     uint16_t remaining_s = 0;

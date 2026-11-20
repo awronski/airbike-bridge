@@ -29,6 +29,8 @@ Automatic start/resume defaults to three seconds of pedalling; automatic stop de
 
 Recorded duration is elapsed Recording time. It continues across source gaps until stopped, matching recovered cumulative distance/calorie counters when source returns during the same Recording segment. Unknown intervals are excluded from averages and mark the ride partial. Stopped intervals are excluded.
 
+The dashboard adds distance from the console counter until it reaches **19.995 km**. Once the counter stops advancing at that value, the ATOM calculates additional distance from the same bike speed readings sent to Garmin, using fresh samples while recording. Pauses and missing measurements can still affect how closely the totals match.
+
 ## Riders, bands and history
 
 Options → Settings supports ten rider profiles: name, sex, age, weight in kg and maximum HR. Guest is always available. The editor selects the saved profile after creation so a second Save updates that person.

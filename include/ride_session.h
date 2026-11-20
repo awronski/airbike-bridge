@@ -27,6 +27,7 @@ struct Tracker {
     History history;Record current;State state=READY;
     bool manualStop=false, pending=false, baseline=false, clockSet=false, tracking=false, rearm=false;
     uint32_t lastTick=0,lastSequence=0,lastActivity=0,activitySince=0;
+    uint32_t recordingSinceMs=0, cappedDistanceRemainder=0;
     Input latest;airbike::Metrics last;
     bool hasRide() const {return state!=READY;}
     bool fresh(uint32_t now) const {return latest.fresh(now);}
@@ -36,12 +37,17 @@ struct Tracker {
     void start(const app::Rider& rider,uint32_t now) {
         current=Record{};current.riderID=rider.id;memcpy(current.riderName,rider.name,app::NAME_BYTES);
         state=RECORDING;manualStop=false;pending=false;lastTick=now;clockSet=true;lastActivity=now;
+        recordingSinceMs=now;cappedDistanceRemainder=0;
         current.partial=latest.metrics.elapsed_s>0 || latest.metrics.distance_m>0;
         baselineNow();
         if(!latest.finished){current.maxPower=latest.metrics.power_w;current.maxSpeed=speed(latest.metrics.speed_kph);}
     }
     void stop(bool manual,uint32_t now){state=STOPPED;manualStop=manual;lastTick=now;tracking=false;}
-    void resume(uint32_t now){state=RECORDING;manualStop=false;lastTick=now;baselineNow();tracking=false;}
+    void resume(uint32_t now){
+        state=RECORDING;manualStop=false;lastTick=now;
+        recordingSinceMs=now;
+        baselineNow();tracking=false;
+    }
     void clear(uint32_t now) {
         current=Record{};state=READY;manualStop=false;pending=false;tracking=false;lastTick=now;
         rearm=latest.fresh(now)&&!latest.finished&&(latest.metrics.power_w>0||latest.metrics.cadence_rpm>0);
@@ -50,6 +56,21 @@ struct Tracker {
     void finish(uint8_t why,uint32_t now){if(!hasRide()||pending)return;current.reason=why;pending=true;stop(true,now);}
     bool nonempty() const {return current.durationMs>0||current.distanceM>0;}
     void commit(uint32_t now){if(pending&&nonempty())history.add(current);clear(now);}
+
+    void addCappedDistance(const Input& previous,const Input& packet,uint32_t now) {
+        if(previous.finished||packet.finished||!previous.fresh(packet.packetMs)||!packet.fresh(now))return;
+        // Only count the observed interval after Start or Resume, even if it began between packets.
+        const uint32_t packetAge=now-packet.packetMs;
+        const uint32_t recordingAge=now-recordingSinceMs;
+        if(packetAge>=recordingAge)return;
+        const uint32_t interval=std::min(packet.packetMs-previous.packetMs,recordingAge-packetAge);
+        // Speed is in hundredths of km/h. Keep fractions instead of flooring every packet.
+        constexpr uint32_t CENTIKPH_MS_PER_METRE=360000;
+        const uint32_t distanceUnits=cappedDistanceRemainder+uint32_t(speed(previous.metrics.speed_kph))*interval;
+        current.distanceM+=distanceUnits/CENTIKPH_MS_PER_METRE;
+        cappedDistanceRemainder=distanceUnits%CENTIKPH_MS_PER_METRE;
+    }
+
     void tick(const Input& b,const heart::Sample& hr,const app::Settings& cfg,uint32_t now,const app::Rider* rider=nullptr,bool allowStart=true) {
         const bool isFresh=b.fresh(now);
         const uint32_t dt=clockSet?uint32_t(now-lastTick):0;lastTick=now;clockSet=true;
@@ -65,6 +86,7 @@ struct Tracker {
                 if(hr.valid(now)){current.hrSum+=uint64_t(hr.bpm)*dt;current.hrMs+=dt;current.maxHR=std::max(current.maxHR,hr.bpm);}
             }else current.partial=true;
         }
+        const auto previous=latest;
         latest=b;
         if(!b.connected){if(hasRide())finish(DISCONNECTED,now);baseline=false;tracking=false;return;}
         if(tracking&&uint32_t(now-lastActivity)>=4000)tracking=false;
@@ -78,7 +100,12 @@ struct Tracker {
                 if(reset){if(hasRide())finish(CONSOLE_RESET,now);tracking=false;rearm=false;}
                 else {
                     progressed=m.elapsed_s>last.elapsed_s||m.distance_m>last.distance_m||m.calories_kcal>last.calories_kcal;
-                    if(state==RECORDING&&!pending){current.distanceM+=m.distance_m-last.distance_m;current.calories+=m.calories_kcal-last.calories_kcal;
+                    if(state==RECORDING&&!pending){
+                        const auto consoleLimit=airbike::CONSOLE_DISTANCE_LIMIT_M;
+                        if(m.distance_m==consoleLimit&&last.distance_m==consoleLimit&&previous.metrics.distance_m==consoleLimit)
+                            addCappedDistance(previous,b,now);
+                        else current.distanceM+=m.distance_m-last.distance_m;
+                        current.calories+=m.calories_kcal-last.calories_kcal;
                         if(isFresh&&!b.finished){current.maxPower=std::max(current.maxPower,m.power_w);current.maxSpeed=std::max(current.maxSpeed,speed(m.speed_kph));}}
                     if(isFresh&&!b.finished&&(m.power_w>0||m.cadence_rpm>0)){
                         if(progressed){if(!tracking){activitySince=now;tracking=true;}lastActivity=now;}
