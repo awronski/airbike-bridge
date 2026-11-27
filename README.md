@@ -8,6 +8,8 @@ An original M5Stack ATOM Lite (ESP32-PICO-D4) reads the bike over Bluetooth and 
 
 The ATOM hosts the dashboard on your local Wi-Fi and keeps the latest 20 saved rides. An optional Polar H10 adds heart rate to the dashboard and can connect directly to Garmin at the same time.
 
+![The AirBike Elite and Polar H10 send data to the ATOM Lite, which relays cycling data to Garmin and serves the dashboard over local Wi-Fi.](docs/airbike-bridge-diagram.png)
+
 ## Get started
 
 1. Build and flash the `atom-lite` firmware with PlatformIO.
