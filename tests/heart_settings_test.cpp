@@ -18,6 +18,15 @@ int main(){
     snprintf(s.hrAddress,sizeof(s.hrAddress),"aa:bb:cc:dd:ee:ff");snprintf(s.hrName,sizeof(s.hrName),"Polar H10 ABC");assert(app::valid(s));
     uint8_t bytes[app::SETTINGS_BYTES];app::encode(s,bytes);app::Settings restored;assert(app::decode(restored,bytes,sizeof(bytes)));
     assert(restored.selectedID==1&&restored.riders[0].weightDeciKg==655&&!strcmp(restored.selected().name,"Żaneta"));
+    assert(restored.selected().ftpWatts==0&&!restored.selected().createKey); // Existing v2 reserved bytes are zero.
+    assert(!restored.findCreatedRider(0));
+    constexpr uint64_t request=0x96a5f02136b487c1ULL;
+    s.riders[0].ftpWatts=247;s.riders[0].createKey=request;app::encode(s,bytes);
+    assert(app::decode(restored,bytes,sizeof(bytes))&&restored.selected().ftpWatts==247);
+    assert(restored.findCreatedRider(request)==restored.find(1));
+    assert(!restored.findCreatedRider(request+1));
+    assert(!strcmp(restored.hrAddress,"aa:bb:cc:dd:ee:ff"));
+    s.riders[0].ftpWatts=app::MAX_FTP_WATTS+1;assert(!app::valid(s));s.riders[0].ftpWatts=247;
     bytes[40]^=1;assert(!app::decode(restored,bytes,sizeof(bytes)));assert(restored.selectedID==1);
     s.riders[0].maxHR=1;assert(!app::valid(s));s.riders[0].maxHR=185;s.selectedID=99;assert(!app::valid(s));
     assert(!app::validName(" ")&&!app::validName("bad\nname")&&!app::validName("\xc0\xaf")&&!app::validName("\xed\xa0\x80"));

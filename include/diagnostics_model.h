@@ -142,17 +142,23 @@ struct Recorder {
     }
 };
 static_assert(sizeof(Event)==32&&sizeof(Health)==32,"Record size budget");
-static_assert(COUNT*4+184<512,"Compact header budget");
+constexpr size_t STATS_OFFSET=72, RSSI_RANGE_COUNT=3, RSSI_RANGE_BYTES=4;
+constexpr size_t REJECTED_LIMIT=4, REJECTED_BYTES=6+sizeof(Rejected::bytes);
+constexpr size_t SAVED_EVENTS_OFFSET=512, SAVED_EVENT_BYTES=32;
+constexpr size_t COMPACT_HEADER_BYTES =
+    STATS_OFFSET+COUNT*4+RSSI_RANGE_COUNT*RSSI_RANGE_BYTES+REJECTED_LIMIT*REJECTED_BYTES;
+static_assert(COMPACT_HEADER_BYTES<=SAVED_EVENTS_OFFSET,"Compact header budget");
+static_assert(SAVED_EVENTS_OFFSET+SAVED_EVENTS*SAVED_EVENT_BYTES<=STORAGE_BYTES-4,"Compact event budget");
 inline void encode(const Compact& r,uint8_t* p){
     memset(p,0,STORAGE_BYTES);memcpy(p,"ABD1",4);p[4]=1;p[5]=r.eventCount;p[6]=r.rejectedCount;
     p[7]=(r.active?1:0)|(r.partial?2:0)|(r.hasSession?4:0);memcpy(p+8,r.build,32);
     const uint32_t meta[]={r.sessionID,r.startMs,r.endMs,r.rider,r.resetReason,r.capturedMs,r.omitted,r.endReason};
     for(unsigned i=0;i<8;++i)rides::writeLE(p+40+i*4,meta[i],4);
-    for(unsigned i=0;i<COUNT;++i)rides::writeLE(p+72+i*4,r.stats[i],4);
-    size_t at=72+COUNT*4;
-    for(unsigned i=0;i<3;++i){rides::writeLE(p+at,uint16_t(r.rssiMin[i]),2);rides::writeLE(p+at+2,uint16_t(r.rssiMax[i]),2);at+=4;}
-    for(unsigned i=0;i<4;++i){rides::writeLE(p+at,r.rejected[i].at,4);rides::writeLE(p+at+4,r.rejected[i].length,2);memcpy(p+at+6,r.rejected[i].bytes,24);at+=30;}
-    for(unsigned i=0;i<r.eventCount;++i){const auto& e=r.events[i];auto* q=p+512+i*32;
+    for(unsigned i=0;i<COUNT;++i)rides::writeLE(p+STATS_OFFSET+i*4,r.stats[i],4);
+    size_t at=STATS_OFFSET+COUNT*4;
+    for(unsigned i=0;i<RSSI_RANGE_COUNT;++i){rides::writeLE(p+at,uint16_t(r.rssiMin[i]),2);rides::writeLE(p+at+2,uint16_t(r.rssiMax[i]),2);at+=RSSI_RANGE_BYTES;}
+    for(unsigned i=0;i<REJECTED_LIMIT;++i){rides::writeLE(p+at,r.rejected[i].at,4);rides::writeLE(p+at+4,r.rejected[i].length,2);memcpy(p+at+6,r.rejected[i].bytes,sizeof(Rejected::bytes));at+=REJECTED_BYTES;}
+    for(unsigned i=0;i<r.eventCount;++i){const auto& e=r.events[i];auto* q=p+SAVED_EVENTS_OFFSET+i*SAVED_EVENT_BYTES;
         rides::writeLE(q,e.at,4);rides::writeLE(q+4,e.kind,2);q[6]=e.source;q[7]=e.flags;
         const uint32_t fields[]={uint32_t(e.a),uint32_t(e.b),uint32_t(e.c),uint32_t(e.d),e.sequence,0};
         for(unsigned j=0;j<6;++j)rides::writeLE(q+8+j*4,fields[j],4);
@@ -160,17 +166,17 @@ inline void encode(const Compact& r,uint8_t* p){
     rides::writeLE(p+STORAGE_BYTES-4,rides::checksum(p,STORAGE_BYTES-4),4);
 }
 inline bool decode(Compact& r,const uint8_t* p,size_t n){
-    if(!p||n!=STORAGE_BYTES||memcmp(p,"ABD1",4)||p[4]!=1||p[5]>SAVED_EVENTS||p[6]>4||p[7]>7||rides::readLE(p+68,4)>RECORDING_OFF||
+    if(!p||n!=STORAGE_BYTES||memcmp(p,"ABD1",4)||p[4]!=1||p[5]>SAVED_EVENTS||p[6]>REJECTED_LIMIT||p[7]>7||rides::readLE(p+68,4)>RECORDING_OFF||
        rides::readLE(p+n-4,4)!=rides::checksum(p,n-4))return false;
-    for(unsigned i=0;i<p[5];++i){const auto* q=p+512+i*32;if(rides::readLE(q+4,2)<BOOT||rides::readLE(q+4,2)>CONNECT_DONE||q[6]>STORAGE)return false;}
+    for(unsigned i=0;i<p[5];++i){const auto* q=p+SAVED_EVENTS_OFFSET+i*SAVED_EVENT_BYTES;if(rides::readLE(q+4,2)<BOOT||rides::readLE(q+4,2)>CONNECT_DONE||q[6]>STORAGE)return false;}
     memcpy(r.build,p+8,32);r.build[32]=0;r.eventCount=p[5];r.rejectedCount=p[6];r.active=p[7]&1;r.partial=p[7]&2;r.hasSession=p[7]&4;
     uint32_t* meta[]={&r.sessionID,&r.startMs,&r.endMs,&r.rider,&r.resetReason,&r.capturedMs,&r.omitted};
     for(unsigned i=0;i<7;++i)*meta[i]=rides::readLE(p+40+i*4,4);r.endReason=rides::readLE(p+68,4);
-    for(unsigned i=0;i<COUNT;++i)r.stats[i]=rides::readLE(p+72+i*4,4);
-    size_t at=72+COUNT*4;
-    for(unsigned i=0;i<3;++i){r.rssiMin[i]=int16_t(rides::readLE(p+at,2));r.rssiMax[i]=int16_t(rides::readLE(p+at+2,2));at+=4;}
-    for(unsigned i=0;i<4;++i){r.rejected[i].at=rides::readLE(p+at,4);r.rejected[i].length=rides::readLE(p+at+4,2);memcpy(r.rejected[i].bytes,p+at+6,24);at+=30;}
-    for(unsigned i=0;i<r.eventCount;++i){auto& e=r.events[i];const auto* q=p+512+i*32;e.at=rides::readLE(q,4);e.kind=rides::readLE(q+4,2);e.source=q[6];e.flags=q[7];
+    for(unsigned i=0;i<COUNT;++i)r.stats[i]=rides::readLE(p+STATS_OFFSET+i*4,4);
+    size_t at=STATS_OFFSET+COUNT*4;
+    for(unsigned i=0;i<RSSI_RANGE_COUNT;++i){r.rssiMin[i]=int16_t(rides::readLE(p+at,2));r.rssiMax[i]=int16_t(rides::readLE(p+at+2,2));at+=RSSI_RANGE_BYTES;}
+    for(unsigned i=0;i<REJECTED_LIMIT;++i){r.rejected[i].at=rides::readLE(p+at,4);r.rejected[i].length=rides::readLE(p+at+4,2);memcpy(r.rejected[i].bytes,p+at+6,sizeof(Rejected::bytes));at+=REJECTED_BYTES;}
+    for(unsigned i=0;i<r.eventCount;++i){auto& e=r.events[i];const auto* q=p+SAVED_EVENTS_OFFSET+i*SAVED_EVENT_BYTES;e.at=rides::readLE(q,4);e.kind=rides::readLE(q+4,2);e.source=q[6];e.flags=q[7];
         e.a=int32_t(rides::readLE(q+8,4));e.b=int32_t(rides::readLE(q+12,4));e.c=int32_t(rides::readLE(q+16,4));e.d=int32_t(rides::readLE(q+20,4));e.sequence=rides::readLE(q+24,4);}
     return true;
 }

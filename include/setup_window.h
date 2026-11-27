@@ -1,8 +1,7 @@
 #pragma once
 #include <stdint.h>
 
-// Reopening settings while connected must not start the completion countdown.
-// Only saving a successful new connection permits the hotspot to close.
+// Explicit setup closes after a newly saved connection and a grace period.
 struct SetupWindow {
     bool completed = false;
     uint32_t completedMs = 0;

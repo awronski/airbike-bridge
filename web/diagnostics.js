@@ -43,7 +43,7 @@ var AirBikeDiagnostics = (() => {
     byID('diagnostic-events').replaceChildren(...rows);
   }
   async function request(url,options={}) {
-    const response=await fetch(url,{cache:'no-store',signal:AbortSignal.timeout(4000),...options});
+    const response=await fetch(url,{cache:'no-store',signal:AbortSignal.timeout(options.method==='POST'?15000:4000),...options});
     if(!response.ok)throw new Error(await response.text());return response.json();
   }
   async function refresh() {
@@ -57,7 +57,15 @@ var AirBikeDiagnostics = (() => {
     toggle.addEventListener('change',async()=>{
       const wanted=toggle.checked;saving=true;toggle.disabled=true;++generation;
       try{const data=await request('/api/diagnostics/settings',{method:'POST',headers:{'X-AirBike-Action':'diagnostics','Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({enabled:wanted?'1':'0'})});render(data);}
-      catch(e){toggle.checked=lastEnabled;byID('diagnostic-setting-status').textContent=e.message;}
+      catch(e){
+        toggle.checked=lastEnabled;
+        try{
+          render(await request('/api/diagnostics'));
+          byID('diagnostic-setting-status').textContent='Could not confirm the save. Showing the current preference.';
+        }catch(_){
+          byID('diagnostic-setting-status').textContent='Could not confirm the save. Refresh Settings to check the preference.';
+        }
+      }
       finally{saving=false;toggle.disabled=false;}
     });
     panel.addEventListener('toggle',()=>{if(panel.open)refresh();});

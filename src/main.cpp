@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <atomic>
 #include <errno.h>
+#include <sys/time.h>
 #include "ride_session.h"
 #include "polar_hr.h"
 #include "band_selection.h"
@@ -18,7 +19,9 @@
 #include "wifi_credentials.h"
 #include "live_trend.h"
 #include "history_delete.h"
+#include "history_recovery.h"
 #include "diagnostics.h"
+#include <esp_system.h>
 #include <esp_timer.h>
 #include "setup_page.h"
 #include "web_page.h"
@@ -68,7 +71,10 @@ bool settingsOpened=false, settingsStorageOK=true, historyDirty=false;
 uint8_t historyBytes[session::HISTORY_BYTES];
 uint8_t settingsBytes[app::SETTINGS_BYTES];
 bool historyStorageOK = true;
-bool historyLoadedOK = true;
+const char* corruptHistoryKey = nullptr;
+bool historyBackupVerified = false;
+bool recoveryRideWriteUnverified = false;
+uint32_t historyVersion = 0;
 uint32_t historyRetryMs = 0;
 NimBLEClient* bikeClient = nullptr;
 std::atomic<uint8_t> bikeDisconnectIntent{diagnostic::UNEXPECTED};
@@ -365,15 +371,9 @@ void sendJSON(const String& body) {
     server.send(200, "application/json", body);
 }
 
-bool persistHistory(bool force=false) {
-    if(!rideTracker.pending&&!historyDirty)return historyStorageOK&&historyLoadedOK;
-    if(rideTracker.pending&&!rideTracker.nonempty()){rideTracker.commit(millis());return true;}
-    if(!historyLoadedOK)return false; // Never overwrite unvalidated saved history.
-    if(!force&&!historyStorageOK&&uint32_t(millis()-historyRetryMs)<30000)return false;
-    historyRetryMs=millis();
-    const auto* pending=rideTracker.pending?&rideTracker.current:nullptr;
-    session::encode(rideTracker.history,historyBytes,pending);
-    const uint32_t expected=rides::checksum(historyBytes,sizeof(historyBytes)-4);
+bool writeHistory(const session::History& history,const session::Record* pending) {
+    session::encode(history,historyBytes,pending);
+    const uint32_t expected=rides::readLE(historyBytes+sizeof(historyBytes)-4,4);
     const uint64_t diagnosticFlashStart=esp_timer_get_time();
     historyStorageOK=ridePreferences.putBytes("history-v2",historyBytes,sizeof(historyBytes))==sizeof(historyBytes);
     if(historyStorageOK){
@@ -381,13 +381,30 @@ bool persistHistory(bool force=false) {
             rides::readLE(historyBytes+sizeof(historyBytes)-4,4)==expected&&rides::checksum(historyBytes,sizeof(historyBytes)-4)==expected;
     }
     diagnostic::flash(1,esp_timer_get_time()-diagnosticFlashStart,historyStorageOK);
+    if(historyStorageOK)historyVersion=expected;
+    return historyStorageOK;
+}
+
+bool persistHistory(bool force=false) {
+    if(!rideTracker.pending&&!historyDirty)return historyStorageOK&&!corruptHistoryKey;
+    if(rideTracker.pending&&!rideTracker.nonempty()){rideTracker.commit(millis());return true;}
+    if(corruptHistoryKey)return false;
+    if(!force&&!historyStorageOK&&uint32_t(millis()-historyRetryMs)<30000)return false;
+    historyRetryMs=millis();
+    const auto* pending=rideTracker.pending?&rideTracker.current:nullptr;
+    writeHistory(rideTracker.history,pending);
     if(historyStorageOK){if(rideTracker.pending)rideTracker.commit(millis());historyDirty=false;}
     return historyStorageOK;
 }
 
+bool canClearRide() {
+    return rideTracker.hasRide() &&
+        (!rideTracker.pending || (corruptHistoryKey && !recoveryRideWriteUnverified));
+}
+
 app::Rider chosenRider(){return app::selectedBandRider(appSettings,rideTracker.hasRide()?rideTracker.current.riderID:bandSelection.riderID);}
-void syncBandSelection(){
-    const auto h=hr::snapshot();bool present[app::MAX_RIDERS]={};const uint32_t now=millis();
+void syncBandSelection(const hr::Status& h){
+    bool present[app::MAX_RIDERS]={};const uint32_t now=millis();
     for(size_t i=0;i<appSettings.count;++i){const auto& r=appSettings.riders[i];
         present[i]=h.sample.connected&&app::sameBand(r.bandAddress,r.bandType,h.address,h.type);
         for(size_t j=0;j<h.count&&!present[i];++j)present[i]=uint32_t(now-h.devices[j].seenMs)<bands::PRESENT_MS&&app::sameBand(r.bandAddress,r.bandType,h.devices[j].address,h.devices[j].type);
@@ -395,23 +412,41 @@ void syncBandSelection(){
     const bool before=bandSelection.ready();const uint32_t oldID=bandSelection.riderID;
     bandSelection.update(appSettings,present,now,rideTracker.hasRide(),rideTracker.current.riderID);
     if(!rideTracker.hasRide()&&(!before||oldID!=bandSelection.riderID))rideTracker.resetDetectors();
-    hr::monitor(appSettings.autoRider&&!rideTracker.hasRide());
+    const bool monitor=appSettings.autoRider&&!rideTracker.hasRide();
+    if(h.monitoring!=monitor)hr::monitor(monitor);
     const auto r=chosenRider();
-    if(bandSelection.ready())hr::configure(r.bandAddress,r.bandType,r.bandName);
-    else hr::configure("",0,"");
+    const char* address=bandSelection.ready()?r.bandAddress:"";
+    const char* name=bandSelection.ready()?r.bandName:"";
+    const uint8_t type=bandSelection.ready()?r.bandType:0;
+    const bool sameAddress=(!h.address[0]&&!address[0]&&h.type==type)||
+        app::sameBand(h.address,h.type,address,type);
+    if(!sameAddress||strcmp(h.name,name))hr::configure(address,type,name);
+}
+void syncBandSelection(){syncBandSelection(hr::snapshot());}
+
+void updateRideDate() {
+    if (!rideTracker.hasRide() || rideTracker.current.startedAt) return;
+    const uint32_t now = millis();
+    timeval clock{};
+    if (gettimeofday(&clock, nullptr) == 0 && clock.tv_sec > 0) {
+        rideTracker.dateRideStart(now, uint64_t(clock.tv_sec) * 1000 + clock.tv_usec / 1000);
+    }
 }
 
 void updateDashboardRide() {
     const auto copy=snapshot();session::Input in;
     in.connected=copy.connected;in.hasData=copy.hasData;in.sequence=copy.dataPackets;in.packetMs=copy.dataMs;
     in.finished=copy.consoleState==0x80||copy.consoleState==0x01;in.metrics=copy.metrics;
-    syncBandSelection();const auto rider=chosenRider();const auto h=hr::snapshot();auto sample=h.sample;
+    const auto h=hr::snapshot();syncBandSelection(h);const auto rider=chosenRider();auto sample=h.sample;
     if(!bandSelection.ready()||!app::sameBand(rider.bandAddress,rider.bandType,h.address,h.type))sample.connected=false;
+    const bool hadRide=rideTracker.hasRide();
     rideTracker.tick(in,sample,appSettings,millis(),&rider,bandSelection.ready());
+    updateRideDate();
     persistHistory();
-    syncBandSelection();
+    if(rideTracker.hasRide()!=hadRide)syncBandSelection();
     const auto selected=chosenRider();const uint32_t now=millis();
     liveTrend.select(selected.id,bandSelection.ready());
+    liveTrend.setRideActive(rideTracker.hasRide());
     const bool correct=app::sameBand(selected.bandAddress,selected.bandType,h.address,h.type);
     liveTrend.sample(now,correct&&sample.valid(now),sample.bpm,in.fresh(now),in.finished?0:in.metrics.power_w);
     diagnostic::tick(in.fresh(now)&&!in.finished&&(in.metrics.power_w>0||in.metrics.cadence_rpm>0),bandSelection.ready()?selected.id:UINT32_MAX,copy.consoleState,rideTracker.state);
@@ -421,12 +456,13 @@ String nullable(unsigned value){return value?String(value):String("null");}
 String riderJSON(const app::Rider& r){
     return String("{\"id\":")+String(r.id)+",\"name\":"+jsonString(r.name)+",\"sex\":"+String(r.sex)+
         ",\"age\":"+nullable(r.age)+",\"weight_kg\":"+(r.weightDeciKg?String(r.weightDeciKg/10.0f,1):String("null"))+
-        ",\"max_hr\":"+nullable(r.maxHR)+",\"band_address\":"+jsonString(r.bandAddress)+",\"band_type\":"+String(r.bandType)+",\"band_name\":"+jsonString(r.bandName)+"}";
+        ",\"max_hr\":"+nullable(r.maxHR)+",\"ftp_w\":"+nullable(r.ftpWatts)+",\"band_address\":"+jsonString(r.bandAddress)+",\"band_type\":"+String(r.bandType)+",\"band_name\":"+jsonString(r.bandName)+"}";
 }
 String rideJSON(const session::Record& r) {
     String body;body.reserve(400);
     body="{\"id\":"+String(r.id)+",\"duration_s\":"+String(static_cast<unsigned long>(r.durationMs/1000));
     body+=",\"distance_m\":"+String(r.distanceM)+",\"calories_kcal\":"+String(r.calories);
+    body+=",\"started_at\":"+nullable(r.startedAt);
     body+=",\"max_power_w\":"+String(r.maxPower)+",\"max_speed_kph\":"+String(r.maxSpeed/100.0f,2);
     body+=",\"avg_power_w\":"+(r.bikeMs?String(double(r.powerSum)/r.bikeMs,1):String("null"));
     body+=",\"avg_speed_kph\":"+(r.bikeMs?String(double(r.speedSum)/r.bikeMs/100.0,2):String("null"));
@@ -440,25 +476,42 @@ String rideJSON(const session::Record& r) {
 String selectionJSON(){
     const auto rider=chosenRider();String out=String("{\"mode\":")+jsonString(appSettings.autoRider?"auto":"manual")+",\"status\":"+jsonString(bands::phaseName(bandSelection.phase));
     out+=",\"ready\":"+String(bandSelection.ready()?"true":"false")+",\"rider_id\":"+String(rider.id)+",\"rider_name\":"+jsonString(rider.name)+",\"candidates\":[";
-    for(size_t i=0;i<bandSelection.count;++i){const auto* r=appSettings.find(bandSelection.candidates[i]);if(i)out+=',';out+="{\"id\":"+String(r->id)+",\"name\":"+jsonString(r->name)+"}";}
+    bool first=true;
+    for(size_t i=0;i<bandSelection.count;++i){
+        const auto* r=appSettings.find(bandSelection.candidates[i]);
+        if(!r)continue;
+        if(!first)out+=',';
+        first=false;
+        out+="{\"id\":"+String(r->id)+",\"name\":"+jsonString(r->name)+"}";
+    }
     return out+"]}";
 }
 void sendRides(){
-    String body;body.reserve(9000);
+    const String version=String(historyVersion,HEX);
+    const bool includeHistory=server.method()!=HTTP_GET||server.arg("history_version")!=version;
+    String body;body.reserve(includeHistory?9000:1000);
     body=String("{\"active\":")+(rideTracker.hasRide()?"true":"false");
     body+=",\"state\":"+jsonString(rideTracker.state==session::READY?"ready":rideTracker.state==session::RECORDING?"recording":"stopped");
     body+=",\"stop_reason\":"+jsonString(rideTracker.manualStop?"manual":"auto");
     body+=",\"saving\":"+String(rideTracker.pending?"true":"false");
     body+=",\"can_start\":"+String(rideTracker.fresh(millis())&&bandSelection.ready()?"true":"false");
-    body+=",\"storage_ok\":"+String(historyStorageOK&&historyLoadedOK?"true":"false");
+    body+=",\"can_clear\":"+String(canClearRide()?"true":"false");
+    body+=",\"storage_ok\":"+String(historyStorageOK&&!corruptHistoryKey?"true":"false");
+    body+=",\"history_corrupt\":"+String(corruptHistoryKey?"true":"false");
+    body+=",\"history_version\":"+jsonString(version.c_str());
     body+=",\"selected_rider\":"+riderJSON(chosenRider())+",\"selection\":"+selectionJSON();
-    body+=",\"current\":"+rideJSON(rideTracker.current)+",\"calories_kcal\":"+String(rideTracker.current.calories)+",\"history\":[";
-    for(size_t i=0;i<rideTracker.history.count;++i){if(i)body+=',';body+=rideJSON(rideTracker.history.records[i]);}
-    sendJSON(body+"]}");
+    body+=",\"current\":"+rideJSON(rideTracker.current)+",\"calories_kcal\":"+String(rideTracker.current.calories);
+    if(includeHistory){
+        body+=",\"history\":[";
+        for(size_t i=0;i<rideTracker.history.count;++i){if(i)body+=',';body+=rideJSON(rideTracker.history.records[i]);}
+        body+=']';
+    }
+    sendJSON(body+'}');
 }
 
 void sendTrend(){
     const uint32_t now=millis();const auto rider=chosenRider();
+    liveTrend.setRideActive(rideTracker.hasRide());
     server.sendHeader("Cache-Control","no-store");
     server.setContentLength(CONTENT_LENGTH_UNKNOWN);
     server.send(200,"application/json","");
@@ -533,6 +586,7 @@ void sendLive() {
     body += ",\"power_notifications\":" + String(bridge.powerNotifications);
     body += ",\"csc_notifications\":" + String(bridge.cscNotifications);
     body += ",\"send_failures\":" + String(bridge.sendFailures) + '}';
+    body += ",\"ftp_w\":" + nullable(chosenRider().ftpWatts);
     body += ",\"hr\":" + hrJSON(hr::snapshot());
     body += ",\"metrics\":{\"power_w\":" + String(m.power_w);
     body += ",\"speed_kph\":" + String(m.speed_kph, 2);
@@ -547,8 +601,37 @@ void sendLive() {
 
 
 bool fromSetupAP() {
-    return setupAP && server.client().localIP() == WiFi.softAPIP();
+    if (!setupAP) return false;
+    const IPAddress ip = WiFi.softAPIP();
+    return uint32_t(ip) != 0 && server.client().localIP() == ip;
 }
+
+class SetupOnlyHandler : public RequestHandler {
+    bool canHandle(HTTPMethod method, String uri) override {
+        if (fromSetupAP()) {
+            const bool setupPage = method == HTTP_GET && (uri == "/" || uri == "/api/setup");
+            const bool setupSubmit = method == HTTP_POST && uri == "/wifi";
+            return !setupPage && !setupSubmit;
+        }
+
+        const auto client = server.client();
+        const IPAddress stationIP = WiFi.localIP();
+        if (!uint32_t(stationIP) || client.localIP() != stationIP) return true;
+        if (!(WiFi.getMode() & WIFI_MODE_AP)) return false;
+
+        // A setup peer can address the station IP while both interfaces are up.
+        const uint32_t setupIP = WiFi.softAPIP();
+        const uint32_t mask = WiFi.softAPSubnetMask();
+        const uint32_t peer = client.remoteIP();
+        return !setupIP || !mask || !peer || (peer & mask) == (setupIP & mask);
+    }
+
+    bool handle(WebServer& http, HTTPMethod, String) override {
+        http.sendHeader("Cache-Control", "no-store");
+        http.send(404, "text/plain", "Not found");
+        return true;
+    }
+};
 
 void startSetupAP(bool manual = false) {
     manualSetup = manualSetup || manual;
@@ -604,24 +687,88 @@ void sendSettings(){
         ",\"selected_rider\":"+riderJSON(chosenRider())+",\"rider_mode\":"+jsonString(appSettings.autoRider?"auto":"manual")+",\"hr_address\":"+jsonString(appSettings.hrAddress)+",\"hr_name\":"+jsonString(appSettings.hrName)+"}";
     sendJSON(body);
 }
-void sendRiders(uint32_t savedID=0){
+void sendRiders(uint32_t savedID=0,bool alreadySaved=false){
     String body="{\"selected_id\":"+String(appSettings.selectedID)+",\"mode\":"+jsonString(appSettings.autoRider?"auto":"manual")+",\"selection\":"+selectionJSON()+",\"max_riders\":10,\"riders\":[";
     for(size_t i=0;i<appSettings.count;++i){if(i)body+=',';body+=riderJSON(appSettings.riders[i]);}
-    body+=']';if(savedID)body+=",\"saved_id\":"+String(savedID);sendJSON(body+'}');
+    body+=']';if(savedID)body+=",\"saved_id\":"+String(savedID);
+    if(alreadySaved)body+=",\"already_saved\":true";
+    sendJSON(body+'}');
 }
+void recoverHistory(){
+    if(!allowAction("recover-history"))return;
+    if(server.arg("confirm")!="1"){apiError(400,"Confirm starting a fresh history");return;}
+    if(!corruptHistoryKey){apiError(409,"Ride history does not need recovery");return;}
+    updateDashboardRide();
+    if(rideTracker.state==session::RECORDING){apiError(409,"Stop the current ride before recovering history");return;}
+
+    if(!historyBackupVerified){
+        const bool legacy=strcmp(corruptHistoryKey,"history")==0;
+        const char* backup=legacy?"history-bad-v1":"history-bad-v2";
+        const uint64_t started=esp_timer_get_time();
+        const auto backupResult=session::backupUnreadableHistory(ridePreferences,corruptHistoryKey,backup,
+            [legacy](const uint8_t* bytes,size_t length){
+                if(!legacy)return session::decode(historyCandidate,bytes,length);
+                if(length!=rides::STORAGE_BYTES)return false;
+                rides::Tracker old;
+                if(!rides::decode(old,bytes,length))return false;
+                session::migrate(old,historyCandidate);
+                return true;
+            });
+        if(backupResult==session::BackupResult::READABLE){
+            // A transient read failure must never cause valid history to be replaced.
+            rideTracker.history=historyCandidate;
+            session::encode(rideTracker.history,historyBytes);
+            historyVersion=rides::readLE(historyBytes+sizeof(historyBytes)-4,4);
+            corruptHistoryKey=nullptr;
+            historyDirty=legacy;
+            if(!persistHistory(true)){
+                apiError(503,"Existing history is readable again. The pending save could not be verified. Retry Save & finish.");
+                return;
+            }
+            sendRides();
+            return;
+        }
+        historyBackupVerified=backupResult==session::BackupResult::SAVED;
+        diagnostic::flash(1,esp_timer_get_time()-started,historyBackupVerified);
+        // Pick a fresh ID range once per recovery. A retry keeps the same ride ID.
+        if(historyBackupVerified)historyCandidate.nextID=0x40000000u|(esp_random()&0x3fffffffu);
+    }
+    if(!historyBackupVerified){
+        apiError(503,"Could not verify a backup. The original history was left in place.");return;
+    }
+    if(rideTracker.hasRide())rideTracker.finish(session::FINISHED,millis());
+    const auto* pending=rideTracker.pending&&rideTracker.nonempty()?&rideTracker.current:nullptr;
+    historyCandidate.count=0;
+    if(!writeHistory(historyCandidate,pending)){
+        // A failed verification can follow a successful write of the pending ride.
+        recoveryRideWriteUnverified = pending != nullptr;
+        apiError(503,"The backup is saved, but the fresh history could not be verified. Retry recovery.");return;
+    }
+    rideTracker.history=historyCandidate;
+    if(rideTracker.pending)rideTracker.commit(millis());
+    corruptHistoryKey=nullptr;
+    historyBackupVerified=false;
+    recoveryRideWriteUnverified=false;
+    historyDirty=false;
+    diagnostic::finishCapture();
+    sendRides();
+}
+
 void configureRideHTTP(){
+    server.on("/api/rides/recover",HTTP_POST,recoverHistory);
     server.on("/api/rides/delete",HTTP_POST,[]{
         if(!allowAction("delete-ride"))return;updateDashboardRide();
         unsigned id;
         if(!integer(server.arg("id"),1,0xffffffffu,id)){apiError(400,"Invalid ride ID");return;}
         if(rideTracker.pending){apiError(409,"Wait for the pending ride save before deleting history");return;}
-        if(!historyLoadedOK){apiError(503,"Saved history could not be read; deletion is unavailable");return;}
+        if(corruptHistoryKey){apiError(503,"Saved history could not be read; deletion is unavailable");return;}
         const uint64_t diagnosticFlashStart=esp_timer_get_time();
         const auto result=session::deleteSaved(ridePreferences,rideTracker.history,id,historyCandidate,historyBytes);
         diagnostic::flash(1,esp_timer_get_time()-diagnosticFlashStart,result==session::DeleteResult::SAVED);
         if(result==session::DeleteResult::NOT_FOUND){apiError(404,"This ride is no longer in history");return;}
         historyStorageOK=result==session::DeleteResult::SAVED;
         if(!historyStorageOK){apiError(503,"Could not verify deletion in flash. Refresh history before retrying.");return;}
+        historyVersion=rides::readLE(historyBytes+sizeof(historyBytes)-4,4);
         historyDirty=false;sendRides();
     });
     server.on("/api/rides/control",HTTP_POST,[]{
@@ -630,6 +777,9 @@ void configureRideHTTP(){
         if(action=="finish"){
             if(!rideTracker.hasRide()){apiError(409,"There is no current ride to save");return;}
             rideTracker.finish(session::FINISHED,now);
+            if(corruptHistoryKey&&rideTracker.nonempty()){
+                apiError(503,"History is unreadable. The ride is retained. Use Recover history from Recent rides.");return;
+            }
             if(!persistHistory(true)){apiError(503,"Could not save to flash. The stopped ride is retained; retry Save & finish.");return;}
             diagnostic::finishCapture();
         }else if(rideTracker.pending){apiError(409,"Saving is pending. Retry Save & finish.");return;}
@@ -637,6 +787,7 @@ void configureRideHTTP(){
             if(!rideTracker.fresh(now)){apiError(409,"Connect the bike and wait for fresh readings before starting");return;}
             if(!bandSelection.ready()){apiError(409,"Choose a rider before starting");return;}
             rideTracker.start(chosenRider(),now);
+            updateRideDate();
         }else if(action=="stop"&&rideTracker.state==session::RECORDING)rideTracker.stop(true,now);
         else if(action=="resume"&&rideTracker.state==session::STOPPED){
             if(!rideTracker.fresh(now)){apiError(409,"Wait for fresh bike readings before resuming");return;}
@@ -647,7 +798,10 @@ void configureRideHTTP(){
     server.on("/api/rides/clear",HTTP_POST,[]{
         if(!allowAction("clear-ride"))return;updateDashboardRide();
         if(!rideTracker.hasRide()){apiError(409,"There is no current dashboard ride to clear");return;}
-        if(rideTracker.pending){apiError(409,"A save is pending; retry Save & finish before clearing");return;}
+        if(!canClearRide()){
+            apiError(409,recoveryRideWriteUnverified?"Retry Recover history before clearing this ride":"A save is pending; retry Save & finish before clearing");
+            return;
+        }
         rideTracker.clear(millis());sendJSON("{\"ok\":true}");
     });
     server.on("/api/settings",HTTP_GET,sendSettings);
@@ -666,6 +820,16 @@ void configureRideHTTP(){
     server.on("/api/riders",HTTP_POST,[]{
         if(!allowAction("riders"))return;auto cfg=appSettings;unsigned id=0,sex=0;
         if(server.hasArg("id")&&!integer(server.arg("id"),0,0xfffffffeu,id)){apiError(400,"Invalid rider ID");return;}
+        uint64_t createKey=0;
+        if(!id&&server.hasArg("create_key")){
+            const String key=server.arg("create_key");
+            if(key.length()==16&&strspn(key.c_str(),"0123456789abcdef")==16)createKey=strtoull(key.c_str(),nullptr,16);
+            if(!createKey){apiError(400,"Invalid rider creation key");return;}
+            if(const auto* existing=cfg.findCreatedRider(createKey)){
+                sendRiders(existing->id,true);
+                return;
+            }
+        }
         size_t index=cfg.count;
         if(id){for(size_t i=0;i<cfg.count;++i)if(cfg.riders[i].id==id)index=i;if(index==cfg.count){apiError(404,"Rider not found");return;}}
         if(index==cfg.count&&cfg.count==app::MAX_RIDERS){apiError(409,"The ATOM stores up to 10 riders");return;}
@@ -676,13 +840,17 @@ void configureRideHTTP(){
         if(!app::validName(r.name)||!integer(server.arg("sex"),0,2,sex)||!optionalInteger("age",120,age)||!optionalInteger("max_hr",250,maxHR)||(maxHR&&maxHR<30)){
             apiError(400,"Check name, sex, age (1-120) and maximum HR (30-250); optional fields may be empty");return;}
         r.sex=sex;r.age=age;r.maxHR=maxHR;
+        if(server.hasArg("ftp_w")&&!optionalInteger("ftp_w",app::MAX_FTP_WATTS,r.ftpWatts)){
+            apiError(400,"Enter cycling FTP from 1 to 2000 watts, or leave it blank");return;
+        }
         r.weightDeciKg=0;String weight=server.arg("weight_kg");weight.trim();
         if(weight.length()){
             char* end=nullptr;errno=0;double kg=strtod(weight.c_str(),&end);
             if(errno||!end||*end||!std::isfinite(kg)||kg<1||kg>500||fabs(kg*10-round(kg*10))>.001){apiError(400,"Weight must be 1-500 kg, with at most one decimal place");return;}
             r.weightDeciKg=std::lround(kg*10);
         }
-        cfg.riders[index]=r;if(!id){++cfg.count;++cfg.nextID;}
+        if(!id){r.createKey=createKey;++cfg.count;++cfg.nextID;}
+        cfg.riders[index]=r;
         if(!saveSettings(cfg)){apiError(503,"Could not save rider; previous profiles retained");return;}sendRiders(r.id);
     });
     server.on("/api/riders/select",HTTP_POST,[]{
@@ -715,13 +883,17 @@ void configureRideHTTP(){
             const auto found=hr::snapshot();unsigned type;
             if(!integer(server.arg("type"),0,1,type)){apiError(400,"Invalid Bluetooth address type");return;}
             const String address=server.arg("address");const hr::Device* device=nullptr;
-            for(size_t i=0;i<found.count;++i)if(address==found.devices[i].address&&type==found.devices[i].type&&uint32_t(millis()-found.devices[i].seenMs)<bands::PRESENT_MS)device=&found.devices[i];
+            for(size_t i=0;i<found.count;++i){
+                const auto& candidate=found.devices[i];
+                if(app::sameBand(address.c_str(),type,candidate.address,candidate.type)&&
+                    uint32_t(millis()-candidate.seenMs)<bands::PRESENT_MS)device=&candidate;
+            }
             const bool remembered=app::sameBand(cfg.hrAddress,cfg.hrType,address.c_str(),type);
             if(!device&&!remembered){apiError(409,"Scan and choose a recently discovered H10");return;}
             const auto* owner=app::ownerOf(cfg,address.c_str(),type);
             if(owner&&owner->id!=riderID){apiError(409,"That band is already linked to another rider; unlink it there first");return;}
             if(app::sameBand(cfg.hrAddress,cfg.hrType,rider->bandAddress,rider->bandType)&&!app::sameBand(cfg.hrAddress,cfg.hrType,address.c_str(),type)){cfg.hrAddress[0]=0;cfg.hrName[0]=0;cfg.hrType=0;}
-            snprintf(rider->bandAddress,sizeof(rider->bandAddress),"%s",address.c_str());rider->bandType=type;
+            snprintf(rider->bandAddress,sizeof(rider->bandAddress),"%s",device?device->address:cfg.hrAddress);rider->bandType=type;
             snprintf(rider->bandName,sizeof(rider->bandName),"%s",device?device->name:cfg.hrName);
         }else {apiError(400,"Choose scan, select or unlink");return;}
         if(!saveSettings(cfg)){apiError(503,"Could not save the rider's band link");return;}sendJSON(hrJSON(hr::snapshot(),true));
@@ -729,10 +901,17 @@ void configureRideHTTP(){
 }
 
 void configureHTTP() {
+    // WebServer uses the first matching handler for every request.
+    server.addHandler(new SetupOnlyHandler);
     server.on("/", HTTP_GET, [] {
         server.sendHeader("Cache-Control", "no-store");
-        if (fromSetupAP()) server.send_P(200, "text/html; charset=utf-8", SETUP_PAGE);
-        else server.send_P(200, "text/html; charset=utf-8", WEB_PAGE);
+        if (fromSetupAP()) {
+            server.send_P(200, "text/html; charset=utf-8", SETUP_PAGE);
+        } else {
+            server.sendHeader("Content-Encoding", "gzip");
+            server.send_P(200,"text/html; charset=utf-8",
+                reinterpret_cast<const char*>(WEB_PAGE_GZIP),sizeof(WEB_PAGE_GZIP));
+        }
     });
     diagnostic::configureHTTP(server,allowAction);
     server.on("/api/live", HTTP_GET, sendLive);
@@ -740,13 +919,7 @@ void configureHTTP() {
     server.on("/api/trend", HTTP_GET, sendTrend);
     configureRideHTTP();
     server.on("/api/retry", HTTP_POST, [] {
-        // No cross-origin control requests. The dashboard uses same-origin fetch.
-        const String origin = server.header("Origin");
-        const String expected = String("http://") + server.header("Host");
-        if (origin.length() && origin != expected) {
-            server.send(403, "text/plain", "Use the ATOM's own page");
-            return;
-        }
+        if(!allowAction("retry"))return;
         portENTER_CRITICAL(&stateMux);
         state.retryRequested = true;
         portEXIT_CRITICAL(&stateMux);
@@ -776,6 +949,7 @@ void configureHTTP() {
         }
         joiningSSID = ssid;
         joiningPassword = password;
+        manualSetup = true;
         pendingJoin = true;
         queuedJoinMs = millis();
         setupPhase = "queued";
@@ -859,11 +1033,15 @@ void updateWiFi() {
             if (mdnsStarted) MDNS.addService("http", "tcp", 80);
         }
         if (setupAP) {
-            if (setupWindow.shouldClose(now)) {
+            const bool recoveredSavedNetwork = !manualSetup && !pendingJoin &&
+                wifiCredentialsStored && stationGotIP.load() && WiFi.SSID() == joiningSSID;
+            if (recoveredSavedNetwork || setupWindow.shouldClose(now)) {
                 WiFi.softAPdisconnect(true);
                 WiFi.mode(WIFI_STA);
                 setupAP = false;
                 manualSetup = false;
+                // Drop sockets accepted while the setup network was available.
+                server.begin();
             }
         }
     } else {
@@ -900,14 +1078,23 @@ void setup() {
     historyStorageOK=ridePreferences.begin("airbike-rides",false);
     if(historyStorageOK){
         const size_t v2=ridePreferences.getBytesLength("history-v2");
-        if(v2){historyLoadedOK=v2==session::HISTORY_BYTES&&ridePreferences.getBytes("history-v2",historyBytes,sizeof(historyBytes))==sizeof(historyBytes)&&session::decode(rideTracker.history,historyBytes,sizeof(historyBytes));}
+        if(v2||ridePreferences.isKey("history-v2")){
+            const bool valid=v2==session::HISTORY_BYTES&&
+                ridePreferences.getBytes("history-v2",historyBytes,sizeof(historyBytes))==sizeof(historyBytes)&&
+                session::decode(rideTracker.history,historyBytes,sizeof(historyBytes));
+            if(valid)historyVersion=rides::readLE(historyBytes+sizeof(historyBytes)-4,4);
+            else corruptHistoryKey="history-v2";
+        }
         else {
             const size_t v1=ridePreferences.getBytesLength("history");
-            if(v1){rides::Tracker legacy;uint8_t bytes[rides::STORAGE_BYTES];
-                historyLoadedOK=v1==sizeof(bytes)&&ridePreferences.getBytes("history",bytes,sizeof(bytes))==sizeof(bytes)&&rides::decode(legacy,bytes,sizeof(bytes));
-                if(historyLoadedOK)session::migrate(legacy,rideTracker.history);
+            if(v1||ridePreferences.isKey("history")){
+                rides::Tracker legacy;uint8_t bytes[rides::STORAGE_BYTES];
+                const bool valid=v1==sizeof(bytes)&&ridePreferences.getBytes("history",bytes,sizeof(bytes))==sizeof(bytes)&&
+                    rides::decode(legacy,bytes,sizeof(bytes));
+                if(valid)session::migrate(legacy,rideTracker.history);
+                else corruptHistoryKey="history";
             }
-            historyDirty=historyLoadedOK; // Legacy key retained for recovery.
+            historyDirty=!corruptHistoryKey; // Legacy key retained for recovery.
         }
     }
     settingsOpened=appPreferences.begin("airbike-app",false);settingsStorageOK=settingsOpened;
@@ -930,6 +1117,9 @@ void setup() {
     WiFi.onEvent([](arduino_event_id_t) {
         stationGotIP.store(true);
     }, ARDUINO_EVENT_WIFI_STA_GOT_IP);
+    WiFi.onEvent([](arduino_event_id_t) {
+        stationGotIP.store(false);
+    }, ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
     wifi::Credentials savedWiFi;
     wifiCredentialsStored = wifi::load(preferences, savedWiFi);
     if (wifiCredentialsStored) {
@@ -950,7 +1140,17 @@ void loop() {
     diagnostic::pulse(false);
     server.handleClient();
     updateWiFi();
+    static bool clockSyncStarted = false;
+    if (!clockSyncStarted && stationGotIP.load()) {
+        configTime(0, 0, "pool.ntp.org", "time.nist.gov");
+        clockSyncStarted = true;
+    }
     updateButton();
-    updateDashboardRide();
+    static uint32_t lastDashboardUpdate=0;
+    const uint32_t now=millis();
+    if(uint32_t(now-lastDashboardUpdate)>=50){
+        lastDashboardUpdate=now;
+        updateDashboardRide();
+    }
     delay(2);
 }

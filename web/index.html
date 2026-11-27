@@ -5,9 +5,9 @@
 <meta name="theme-color" content="#080c0d"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="AirBike"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>AirBike</title>
 <style>
-:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#fafafa;background:#080c0d;font-synthesis:none;--green:#9cf4b0;--muted:#adcaaf;--line:#7d9581;--warning:#f1ca85;--red:#f2b0a0}*{box-sizing:border-box}body{margin:0;min-height:100svh}main{max-width:1488px;margin:auto;padding:20px max(5vw,env(safe-area-inset-right)) max(30px,env(safe-area-inset-bottom)) max(5vw,env(safe-area-inset-left))}h1,h2,h3,p{margin:0}h1{font-size:clamp(42px,4.7vw,68px);font-weight:750;letter-spacing:-2.6px;line-height:1.1}h1 span{color:var(--green)}h2{font-size:clamp(24px,3.1vw,44px);letter-spacing:-1px}h3{font-size:18px}header,.section-title{display:flex;align-items:center;justify-content:space-between;gap:16px}header{margin:0 8px 17px}.icon{width:1.4em;height:1.4em;flex-shrink:0;vertical-align:middle;color:var(--green)}button{font:inherit;cursor:pointer;border:0;border-radius:0;background:transparent;color:var(--green);padding:10px 0;font-weight:650;display:inline-flex;align-items:center;justify-content:center;gap:12px;font-size:clamp(16px,2vw,28px);min-height:44px}button:hover{color:#c8ffd2}button:disabled{opacity:.4;cursor:default}button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offset:5px;border-radius:3px}a{color:var(--green)}.settings-button{color:#fafafa;gap:15px}.settings-button svg:last-child{width:.8em}.connections{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:0 8px 19px;border-bottom:1px solid var(--line)}.connection{display:flex;align-items:flex-start;gap:24px;min-width:0}.connection+.connection{border-left:1px solid var(--line);padding-left:16%}.connection>div{min-width:0}.connection .status-icon{flex-shrink:0;width:38px;height:38px;margin-top:3px;color:var(--warning)}.status-icon .icon{width:100%;height:100%;color:inherit}.connection[data-state=good] .status-icon{color:var(--green)}.connection .step{font-size:clamp(18px,2.2vw,29px);line-height:1.1;font-weight:700}.connection .state{color:var(--muted);font-size:clamp(16px,2vw,27px);line-height:1.2;margin-top:3px}.connection[data-state=warn] .state{color:var(--warning)}.status-hint{overflow-wrap:anywhere;font-size:14px;line-height:1.5;color:var(--muted);margin-top:6px}.dashboard{display:grid;grid-template-columns:47% 53%;margin:38px 0}.power-hero{container-type:inline-size;border-right:1px solid var(--line);padding:8px 32px 0 8px;min-width:0}.power-hero h2{font-size:clamp(30px,4vw,56px);letter-spacing:-1px}.power-value{display:flex;align-items:baseline;gap:15px;line-height:1;white-space:nowrap;margin-top:22px;font-weight:750;font-variant-numeric:tabular-nums;letter-spacing:-.08em;font-size:46cqw;color:var(--green)}.power-value .unit{font-weight:700;color:#fafafa;font-size:.37em;letter-spacing:-.03em}.power-value.long{font-size:37cqw}.metrics{padding-left:40px;display:grid;grid-template-columns:1fr 1fr;min-width:0}.metric{min-width:0;padding:0 10px 12px}.metric:nth-child(2n){border-left:1px solid var(--line);padding-left:46px}.metric:nth-child(3),.metric:nth-child(4){border-top:1px solid var(--line);padding-top:14px}.metric:last-child{grid-column:1/-1;border-top:1px solid var(--line);padding-top:14px;padding-bottom:0}.label{font-size:clamp(18px,2vw,28px);font-weight:650;letter-spacing:-.4px}.value{font-size:clamp(38px,5.2vw,74px);font-weight:700;letter-spacing:-2px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}.unit{font-size:.43em;color:var(--muted);font-weight:400;letter-spacing:-.5px;margin-left:8px}.long-time{font-size:.72em}.value.long-number{font-size:clamp(30px,4.4vw,62px)}.ride-actions{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:17px 8px;display:flex;align-items:center;justify-content:space-between;gap:14px}.ride-actions button{padding:5px 0;font-size:clamp(20px,2.3vw,32px);gap:22px}.ride-actions p{font-size:13px;color:var(--muted);text-align:right}.section-title{margin:34px 0 22px}.section-title button{gap:10px}.section-title .icon{width:.85em}.ride-row{display:grid;grid-template-columns:32% 68%;padding:18px 8px 24px;border-bottom:1px solid var(--line);gap:0}.ride-summary{display:flex;gap:68px;align-items:center}.ride-summary>.icon{width:62px;height:62px}.ride-duration{font-size:44px;font-weight:700;letter-spacing:-1px;line-height:1.05;font-variant-numeric:tabular-nums}.ride-distance{font-size:32px;color:var(--muted);margin-top:5px}.ride-stats{padding-right:16%;border-left:1px solid var(--line);padding-left:10%;display:grid;gap:8px;align-content:center}.ride-stat{display:flex;justify-content:space-between;gap:14px;font-size:clamp(15px,2vw,28px);line-height:1.3}.ride-stat dt{color:var(--muted)}.ride-stat dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}.ride-stat small{font-size:1em;font-weight:400;color:var(--muted)}.record-note{font-size:12px;color:var(--muted);margin-top:10px;grid-column:1/-1}.history-meta,.hint{color:var(--muted);font-size:13px;line-height:1.6}.history-meta{margin-top:14px;display:flex;justify-content:space-between;gap:18px}.history-meta p{max-width:780px}.empty{padding:20px 8px 28px;border-bottom:1px solid var(--line);font-size:16px;line-height:1.6;color:var(--muted)}.notice{padding:14px 16px;border:1px solid #7d6848;color:var(--warning);font-size:14px;line-height:1.5;margin:16px 0}.notice[data-error=true]{color:var(--red);border-color:#805b52}.tools{margin-top:28px}details{border-top:1px solid #35483b;padding:18px 8px}summary{cursor:pointer;color:var(--muted);font-size:15px;min-height:24px}.details-content{padding-top:16px;max-width:850px;font-size:15px;line-height:1.7}.details-content h3{margin-top:12px}.details-content p{margin:12px 0;color:var(--muted)}ol{padding-left:24px}.details-content button{font-size:17px}dl.diagnostics{display:grid;grid-template-columns:170px minmax(0,1fr);gap:8px;font-size:13px;line-height:1.6;margin-top:18px}dl.diagnostics dt{color:var(--muted)}dl.diagnostics dd{margin:0;overflow-wrap:anywhere}code{font:12px ui-monospace,SFMono-Regular,Menlo,monospace}footer{display:flex;flex-wrap:wrap;gap:10px 20px;font-size:12px;color:var(--muted);padding:18px 8px}dialog{max-width:500px;max-height:calc(100svh - 40px);width:calc(100% - 32px);overflow:auto;padding:28px;border:1px solid var(--line);border-radius:14px;background:#101715;color:#fafafa}dialog::backdrop{background:#000b}dialog h2{font-size:25px;letter-spacing:-.6px}dialog p,dialog li{font-size:15px;line-height:1.7;color:var(--muted)}dialog p{margin-top:14px}.actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-end;margin-top:24px}.actions button{padding:10px 14px;font-size:15px;border:1px solid var(--line);border-radius:7px}.actions .danger{color:#ffbcaa;border-color:#875f55}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}[hidden]{display:none!important}
-@media(max-width:1000px) and (min-width:701px){.power-value{gap:8px}.metrics{padding-left:24px}.metric:nth-child(2n){padding-left:22px}.connection{gap:14px}.connection+.connection{padding-left:10%}.ride-summary{gap:20px}.ride-duration{font-size:35px}.ride-distance{font-size:25px}.ride-summary>.icon{width:44px;height:44px}}
-@media(max-width:700px){main{padding: max(25px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}header{margin:0 0 32px;gap:12px}h1{font-size:34px;letter-spacing:-1.5px}.settings-button{font-size:14px;gap:8px}.settings-button>.icon{width:25px;height:25px}.settings-button svg:last-child{width:12px}.connections{padding:0 0 15px}.connection{gap:8px}.connection+.connection{padding-left:13px}.connection .status-icon{width:20px;height:20px;margin-top:1px}.connection .step{font-size:16px}.connection .state{font-size:14px;letter-spacing:-.35px}.status-hint{font-size:11px;line-height:1.35}.dashboard{grid-template-columns:1fr;margin:0}.power-hero{container-type:inline-size;border-right:0;border-bottom:1px solid var(--line);padding:30px 0 4px}.power-hero h2{font-size:27px}.power-value{font-size:clamp(112px,35vw,220px);gap:15px;margin-top:-4px;letter-spacing:-.10em}.power-value.long{font-size:29vw}.power-value .unit{font-size:.34em}.metrics{padding:0;grid-template-columns:1fr 1fr}.metric{padding:16px 0 18px}.metric:nth-child(2n){padding-left:20px;border-left:0;position:relative}.metric:nth-child(2n)::before{content:"";position:absolute;left:0;top:18px;bottom:18px;border-left:1px solid var(--line)}.metric:nth-child(3),.metric:nth-child(4){padding-top:16px}.metric:last-child{padding:16px 20px 18px}.label{font-size:18px;letter-spacing:-.4px}.value{font-size:clamp(36px,10.9vw,60px);letter-spacing:-1.3px;line-height:1.16}.unit{margin-left:7px}.value.long-number{font-size:9vw}.ride-actions{padding:0;gap:10px}.ride-actions button{padding:5px 0;font-size:17px;gap:12px}.ride-actions .icon{width:25px;height:25px}.ride-actions p{font-size:11px;max-width:135px}.section-title{margin:24px 0 10px;gap:12px}h2{font-size:25px;letter-spacing:-.7px}.section-title button{font-size:15px;gap:7px}.ride-row{grid-template-columns:36% 64%;padding:10px 0 12px}.ride-summary{gap:12px}.ride-summary>.icon{width:38px;height:38px}.ride-duration{font-size:23px;letter-spacing:-.7px}.ride-distance{font-size:18px;margin-top:4px}.ride-stats{padding-right:0;padding-left:16px;gap:6px}.ride-stat{font-size:13px;gap:5px;display:block}.ride-stat dt{font-size:11px;margin-bottom:1px}.ride-stat dd{font-size:14px}.record-note{font-size:11px;line-height:1.5}.history-meta{font-size:11px;gap:12px}.history-meta p{max-width:240px}details{padding:16px 0}.tools{margin-top:24px}footer{padding:16px 0;font-size:11px}dl.diagnostics{grid-template-columns:112px minmax(0,1fr)}dialog{padding:23px}.actions{gap:8px}.actions button{font-size:14px;padding:9px 11px}}
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#fafafa;background:#080c0d;font-synthesis:none;--green:#9cf4b0;--muted:#adcaaf;--line:#7d9581;--warning:#f1ca85;--red:#f2b0a0}*{box-sizing:border-box}body{margin:0;min-height:100svh}main{max-width:1488px;margin:auto;padding:20px max(5vw,env(safe-area-inset-right)) max(30px,env(safe-area-inset-bottom)) max(5vw,env(safe-area-inset-left))}h1,h2,h3,p{margin:0}h1{font-size:clamp(42px,4.7vw,68px);font-weight:750;letter-spacing:-2.6px;line-height:1.1}h1 span{color:var(--green)}h2{font-size:clamp(24px,3.1vw,44px);letter-spacing:-1px}h3{font-size:18px}header,.section-title{display:flex;align-items:center;justify-content:space-between;gap:16px}header{margin:0 8px 17px}.icon{width:1.4em;height:1.4em;flex-shrink:0;vertical-align:middle;color:var(--green)}button{font:inherit;cursor:pointer;border:0;border-radius:0;background:transparent;color:var(--green);padding:10px 0;font-weight:650;display:inline-flex;align-items:center;justify-content:center;gap:12px;font-size:clamp(16px,2vw,28px);min-height:44px}button:hover{color:#c8ffd2}button:disabled{opacity:.4;cursor:default}button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offset:5px;border-radius:3px}a{color:var(--green)}.settings-button{color:#fafafa;gap:15px}.settings-button svg:last-child{width:.8em}.connections{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:0 8px 19px;border-bottom:1px solid var(--line)}.connection{display:flex;align-items:flex-start;gap:24px;min-width:0}.connection+.connection{border-left:1px solid var(--line);padding-left:16%}.connection>div{min-width:0}.connection .status-icon{flex-shrink:0;width:38px;height:38px;margin-top:3px;color:var(--warning)}.status-icon .icon{width:100%;height:100%;color:inherit}.connection[data-state=good] .status-icon{color:var(--green)}.connection .step{font-size:clamp(18px,2.2vw,29px);line-height:1.1;font-weight:700}.connection .state{color:var(--muted);font-size:clamp(16px,2vw,27px);line-height:1.2;margin-top:3px}.connection[data-state=warn] .state{color:var(--warning)}.status-hint{overflow-wrap:anywhere;font-size:14px;line-height:1.5;color:var(--muted);margin-top:6px}.dashboard{display:grid;grid-template-columns:47% 53%;margin:38px 0}.metrics{padding-left:40px;display:grid;grid-template-columns:1fr 1fr;min-width:0}.metric{min-width:0;padding:0 10px 12px}.metric:nth-child(2n){border-left:1px solid var(--line);padding-left:46px}.metric:nth-child(3),.metric:nth-child(4){border-top:1px solid var(--line);padding-top:14px}.metric:last-child{grid-column:1/-1;border-top:1px solid var(--line);padding-top:14px;padding-bottom:0}.label{font-size:clamp(18px,2vw,28px);font-weight:650;letter-spacing:-.4px}.value{font-size:clamp(38px,5.2vw,74px);font-weight:700;letter-spacing:-2px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}.unit{font-size:.43em;color:var(--muted);font-weight:400;letter-spacing:-.5px;margin-left:8px}.long-time{font-size:.72em}.value.long-number{font-size:clamp(30px,4.4vw,62px)}.ride-actions{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:17px 8px;display:flex;align-items:center;justify-content:space-between;gap:14px}.ride-actions button{padding:5px 0;font-size:clamp(20px,2.3vw,32px);gap:22px}.ride-actions p{font-size:13px;color:var(--muted);text-align:right}.section-title{margin:34px 0 22px}.section-title button{gap:10px}.section-title .icon{width:.85em}.ride-row{display:grid;grid-template-columns:32% 68%;padding:18px 8px 24px;border-bottom:1px solid var(--line);gap:0}.ride-summary{display:flex;gap:68px;align-items:center}.ride-summary>.icon{width:62px;height:62px}.ride-duration{font-size:44px;font-weight:700;letter-spacing:-1px;line-height:1.05;font-variant-numeric:tabular-nums}.ride-distance{font-size:32px;color:var(--muted);margin-top:5px}.ride-stats{padding-right:16%;border-left:1px solid var(--line);padding-left:10%;display:grid;gap:8px;align-content:center}.ride-stat{display:flex;justify-content:space-between;gap:14px;font-size:clamp(15px,2vw,28px);line-height:1.3}.ride-stat dt{color:var(--muted)}.ride-stat dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}.ride-stat small{font-size:1em;font-weight:400;color:var(--muted)}.record-note{font-size:12px;color:var(--muted);margin-top:10px;grid-column:1/-1}.history-meta,.hint{color:var(--muted);font-size:13px;line-height:1.6}.history-meta{margin-top:14px;display:flex;justify-content:space-between;gap:18px}.history-meta p{max-width:780px}.empty{padding:20px 8px 28px;border-bottom:1px solid var(--line);font-size:16px;line-height:1.6;color:var(--muted)}.notice{padding:14px 16px;border:1px solid #7d6848;color:var(--warning);font-size:14px;line-height:1.5;margin:16px 0}.notice[data-error=true]{color:var(--red);border-color:#805b52}.tools{margin-top:28px}details{border-top:1px solid #35483b;padding:18px 8px}summary{cursor:pointer;color:var(--muted);font-size:15px;min-height:24px}.details-content{padding-top:16px;max-width:850px;font-size:15px;line-height:1.7}.details-content h3{margin-top:12px}.details-content p{margin:12px 0;color:var(--muted)}ol{padding-left:24px}.details-content button{font-size:17px}dl.diagnostics{display:grid;grid-template-columns:170px minmax(0,1fr);gap:8px;font-size:13px;line-height:1.6;margin-top:18px}dl.diagnostics dt{color:var(--muted)}dl.diagnostics dd{margin:0;overflow-wrap:anywhere}code{font:12px ui-monospace,SFMono-Regular,Menlo,monospace}footer{display:flex;flex-wrap:wrap;gap:10px 20px;font-size:12px;color:var(--muted);padding:18px 8px}dialog{max-width:500px;max-height:calc(100svh - 40px);width:calc(100% - 32px);overflow:auto;padding:28px;border:1px solid var(--line);border-radius:14px;background:#101715;color:#fafafa}dialog::backdrop{background:#000b}dialog h2{font-size:25px;letter-spacing:-.6px}dialog p,dialog li{font-size:15px;line-height:1.7;color:var(--muted)}dialog p{margin-top:14px}.actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-end;margin-top:24px}.actions button{padding:10px 14px;font-size:15px;border:1px solid var(--line);border-radius:7px}.actions .danger{color:#ffbcaa;border-color:#875f55}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}[hidden]{display:none!important}
+@media(max-width:1000px) and (min-width:701px){.metrics{padding-left:24px}.metric:nth-child(2n){padding-left:22px}.connection{gap:14px}.connection+.connection{padding-left:10%}.ride-summary{gap:20px}.ride-duration{font-size:35px}.ride-distance{font-size:25px}.ride-summary>.icon{width:44px;height:44px}}
+@media(max-width:700px){main{padding: max(25px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}header{margin:0 0 32px;gap:12px}h1{font-size:34px;letter-spacing:-1.5px}.settings-button{font-size:14px;gap:8px}.settings-button>.icon{width:25px;height:25px}.settings-button svg:last-child{width:12px}.connections{padding:0 0 15px}.connection{gap:8px}.connection+.connection{padding-left:13px}.connection .status-icon{width:20px;height:20px;margin-top:1px}.connection .step{font-size:16px}.connection .state{font-size:14px;letter-spacing:-.35px}.status-hint{font-size:11px;line-height:1.35}.dashboard{grid-template-columns:1fr;margin:0}.metrics{padding:0;grid-template-columns:1fr 1fr}.metric{padding:16px 0 18px}.metric:nth-child(2n){padding-left:20px;border-left:0;position:relative}.metric:nth-child(2n)::before{content:"";position:absolute;left:0;top:18px;bottom:18px;border-left:1px solid var(--line)}.metric:nth-child(3),.metric:nth-child(4){padding-top:16px}.metric:last-child{padding:16px 20px 18px}.label{font-size:18px;letter-spacing:-.4px}.value{font-size:clamp(36px,10.9vw,60px);letter-spacing:-1.3px;line-height:1.16}.unit{margin-left:7px}.value.long-number{font-size:9vw}.ride-actions{padding:0;gap:10px}.ride-actions button{padding:5px 0;font-size:17px;gap:12px}.ride-actions .icon{width:25px;height:25px}.ride-actions p{font-size:11px;max-width:135px}.section-title{margin:24px 0 10px;gap:12px}h2{font-size:25px;letter-spacing:-.7px}.section-title button{font-size:15px;gap:7px}.ride-row{grid-template-columns:36% 64%;padding:10px 0 12px}.ride-summary{gap:12px}.ride-summary>.icon{width:38px;height:38px}.ride-duration{font-size:23px;letter-spacing:-.7px}.ride-distance{font-size:18px;margin-top:4px}.ride-stats{padding-right:0;padding-left:16px;gap:6px}.ride-stat{font-size:13px;gap:5px;display:block}.ride-stat dt{font-size:11px;margin-bottom:1px}.ride-stat dd{font-size:14px}.record-note{font-size:11px;line-height:1.5}.history-meta{font-size:11px;gap:12px}.history-meta p{max-width:240px}details{padding:16px 0}.tools{margin-top:24px}footer{padding:16px 0;font-size:11px}dl.diagnostics{grid-template-columns:112px minmax(0,1fr)}dialog{padding:23px}.actions{gap:8px}.actions button{font-size:14px;padding:9px 11px}}
 @media(min-width:400px) and (max-width:700px){.ride-stat{display:flex;align-items:baseline}.ride-stat dt{font-size:12px;margin:0}.ride-stat dd{font-size:14px}}
 @media(max-width:360px){.metric:last-child{padding-left:12px}header{gap:6px}h1{font-size:30px}.settings-button{font-size:12px;gap:5px}.connection{gap:6px}.connection+.connection{padding-left:8px}.connection .step{font-size:14px}.connection .state{font-size:12px}.connection .status-icon{width:17px;height:17px}.metric:nth-child(2n){padding-left:12px}.value{font-size:10.4vw}.ride-summary{gap:7px}.ride-summary>.icon{width:28px;height:28px}.ride-duration{font-size:21px}.ride-distance{font-size:16px}.ride-stats{padding-left:12px}.ride-stat dd{font-size:13px}}
 
@@ -23,38 +23,55 @@ header{align-items:flex-start}.settings-button{flex-direction:column;align-items
 .status-trigger{width:100%;min-width:0;min-height:44px;display:flex;align-items:flex-start;justify-content:flex-start;gap:inherit;padding:0;text-align:left;font:inherit;color:inherit;cursor:help}.status-trigger>div{min-width:0}.status-trigger:hover .step,.status-trigger:focus-visible .step{color:var(--green)}.connection-tooltip{position:fixed;z-index:10;width:max-content;max-width:min(300px,calc(100vw - 24px));max-height:calc(100svh - 24px);overflow:auto;padding:12px 14px;border:1px solid var(--line);border-radius:9px;background:#18221d;color:#fafafa;box-shadow:0 8px 28px #0008;font-size:14px;line-height:1.5;overflow-wrap:anywhere}
 @media(max-width:700px){header{margin-bottom:18px}.settings-button{gap:2px}.options-line{gap:7px}.settings-button .rider-label{font-size:11px}.connection .state{font-weight:400}}
 
-/* Responsive HR dashboard. */
-:root{background:#030505;--green:#b0f8bd;--line:#74977c}main{max-width:1030px;padding:20px 30px 32px}header{margin:0 0 18px}h1{font-size:44px}.settings-button{font-size:19px}.connections{padding:0 0 14px}.connection{gap:14px}.connection+.connection{padding-left:16%}.connection .step{font-size:21px}.connection .state{font-size:18px}.connection .status-icon{width:27px;height:27px}.band-connection{padding:10px 0;border:0;gap:10px}.band-meta{display:flex;align-items:baseline;gap:9px}.band-meta strong{font-size:15px}.band-meta .band-title{color:#fafafa}.band-meta p{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}.band-settings{font-size:12px}.hr-focus{--zone-color:#00a5ff;max-width:800px;margin:4px auto 0}.hr-dial{position:relative;width:min(100%,370px);height:330px;margin:auto}.hr-dial canvas{width:100%;height:100%;display:block}.hr-reading{position:absolute;inset:37% 0 auto;text-align:center;color:var(--zone-color);display:flex;flex-direction:column;pointer-events:none;font-variant-numeric:tabular-nums}.hr-reading #hr{font-size:98px;font-weight:750;letter-spacing:-5px;line-height:1}.hr-unit{font-size:28px;font-weight:650;line-height:1.15}.zone-summary{display:grid;grid-template-columns:1fr 1fr 1.4fr;align-items:center;text-align:center;gap:0;margin:-3px 0 15px;font-size:19px}.zone-summary strong{font-size:30px;letter-spacing:-.7px;color:var(--zone-color)}.zone-summary>span{border-left:1px solid var(--line);padding:3px 6px}.zone-summary>span:last-child{font-size:16px;color:var(--green);font-weight:600}.hr-trend{height:170px;width:100%}.hr-trend canvas{display:block;width:100%;height:100%}.secondary-readings.dashboard{display:block;margin:14px auto 0;max-width:800px}.secondary-readings .metrics{padding:0;display:grid;grid-template-columns:1fr 1fr}.secondary-readings .metric,.secondary-readings .metric:nth-child(2n){padding:8px 18px;border:0;border-bottom:1px solid var(--line)}.secondary-readings .metric:nth-child(2n){border-left:1px solid var(--line)}.secondary-readings .metric::before{display:none}.secondary-readings .label{font-size:19px}.secondary-readings .value{font-size:35px;letter-spacing:-1px;line-height:1.1}.secondary-readings .unit{font-size:.5em}.secondary-readings .power-hero{grid-column:1/-1;border:0;display:flex;align-items:baseline;justify-content:center;gap:14px;padding:9px 0 12px}.secondary-readings .power-hero h2{font-size:19px;letter-spacing:0}.secondary-readings .power-value,.secondary-readings .power-value.long{font-size:38px;letter-spacing:-1px;margin:0;gap:3px}.secondary-readings .power-value .unit{font-size:.5em;color:var(--green)}.ride-actions{max-width:800px;margin:5px auto 0;border:0;padding:6px 0;justify-content:center;flex-wrap:wrap}.control-buttons{width:100%;justify-content:center}.ride-actions .primary-control,.ride-actions .clear-control{flex:1;max-width:300px;min-width:0;font-size:21px;min-height:48px;padding:9px 20px}.ride-actions p{display:none} .ride-actions p:not([hidden]){display:flex;border:0;margin:0;padding:0;font-size:13px;justify-content:center;width:100%}.section-title{margin-top:30px}.hr-focus[data-missing=true] .hr-reading{color:var(--muted)}.hr-focus[data-missing=true] .zone-summary{font-size:13px}.hr-focus[data-missing=true] .zone-summary strong{font-size:18px;color:var(--muted)}
-@media(max-width:700px){main{padding:max(13px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}header{margin-bottom:10px}h1{font-size:32px}.settings-button{font-size:14px}.connections{padding-bottom:9px}.connection{gap:8px}.connection+.connection{padding-left:12px}.connection .step{font-size:15px}.connection .state{font-size:13px}.connection .status-icon{width:19px;height:19px}.band-connection{padding:3px 0;min-height:39px}.band-meta strong{font-size:12px}.band-settings{font-size:11px;max-width:none;min-height:36px}.band-icon{width:18px;height:18px;flex-basis:18px}.hr-focus{margin-top:0}.hr-dial{width:260px;max-width:100%;height:230px}.hr-reading #hr{font-size:78px;letter-spacing:-4px}.hr-unit{font-size:23px}.zone-summary{font-size:15px;margin:0 0 12px;grid-template-columns:1fr .85fr 1.4fr}.zone-summary strong{font-size:24px}.zone-summary>span:last-child{font-size:12px}.hr-trend{height:115px}.secondary-readings.dashboard{margin-top:10px}.secondary-readings .metric,.secondary-readings .metric:nth-child(2n){padding:6px 10px}.secondary-readings .label{font-size:15px}.secondary-readings .value{font-size:29px;line-height:1.12}.secondary-readings .power-hero{padding:8px 0;gap:12px}.secondary-readings .power-hero h2{font-size:16px}.secondary-readings .power-value,.secondary-readings .power-value.long{font-size:31px}.ride-actions .primary-control,.ride-actions .clear-control{font-size:18px;padding:9px 16px;min-height:46px}.ride-actions{padding:5px 0;margin:3px 0 0}.control-buttons{gap:12px}.section-title{margin-top:26px}}
-@media(max-width:360px){main{padding-left:14px;padding-right:14px}.connection{gap:5px}.connection+.connection{padding-left:8px}.connection .step{font-size:14px}.connection .state{font-size:12px}.hr-dial{height:210px;width:238px}.hr-reading #hr{font-size:70px}.hr-trend{height:100px}.zone-summary strong{font-size:22px}.zone-summary>span:last-child{font-size:11px}.band-meta{gap:6px}.band-meta strong{font-size:11px}}
-@media(max-width:700px) and (max-height:750px){header{margin-bottom:5px}.hr-dial{height:170px;width:194px}.hr-reading #hr{font-size:60px}.hr-unit{font-size:20px}.zone-summary{margin-bottom:4px}.hr-trend{height:82px}.secondary-readings.dashboard{margin-top:6px}.secondary-readings .metric{padding-top:5px;padding-bottom:5px}.secondary-readings .power-hero{padding:6px 0}.band-connection{min-height:35px}.band-settings{min-height:35px}.secondary-readings .value{font-size:24px}.secondary-readings .power-value{font-size:28px}.secondary-readings .metric,.secondary-readings .metric:nth-child(2n){padding-top:4px;padding-bottom:4px}.band-connection{padding-top:0;padding-bottom:0}.zone-summary strong{font-size:20px}}
+/* Responsive dashboard. */
+:root{background:#030505;--green:#b0f8bd;--line:#74977c}main{max-width:1030px;padding:20px 30px 32px}header{margin:0 0 18px}h1{font-size:44px}.settings-button{font-size:19px}.connections{padding:0 0 14px}.connection{gap:14px}.connection+.connection{padding-left:16%}.connection .step{font-size:21px}.connection .state{font-size:18px}.connection .status-icon{width:27px;height:27px}.band-connection{padding:10px 0;border:0;gap:10px}.band-meta{display:flex;align-items:baseline;gap:9px}.band-meta strong{font-size:15px}.band-meta .band-title{color:#fafafa}.band-meta p{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}.band-settings{font-size:12px}.secondary-readings.dashboard{display:block;margin:14px auto 0;max-width:800px}.secondary-readings .metrics{padding:0;display:grid;grid-template-columns:1fr 1fr}.secondary-readings .metric,.secondary-readings .metric:nth-child(2n){padding:8px 18px;border:0;border-bottom:1px solid var(--line)}.secondary-readings .metric:nth-child(2n){border-left:1px solid var(--line)}.secondary-readings .metric::before{display:none}.secondary-readings .label{font-size:19px}.secondary-readings .value{font-size:35px;letter-spacing:-1px;line-height:1.1}.secondary-readings .unit{font-size:.5em}.ride-actions{max-width:800px;margin:5px auto 0;border:0;padding:6px 0;justify-content:center;flex-wrap:wrap}.control-buttons{width:100%;justify-content:center}.ride-actions .primary-control,.ride-actions .clear-control{flex:1;max-width:300px;min-width:0;font-size:21px;min-height:48px;padding:9px 20px}.ride-actions p{display:none} .ride-actions p:not([hidden]){display:flex;border:0;margin:0;padding:0;font-size:13px;justify-content:center;width:100%}.section-title{margin-top:30px}
+@media(max-width:700px){main{padding:max(13px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}header{margin-bottom:10px}h1{font-size:32px}.settings-button{font-size:14px}.connections{padding-bottom:9px}.connection{gap:8px}.connection+.connection{padding-left:12px}.connection .step{font-size:15px}.connection .state{font-size:13px}.connection .status-icon{width:19px;height:19px}.band-connection{padding:3px 0;min-height:39px}.band-meta strong{font-size:12px}.band-settings{font-size:11px;max-width:none;min-height:36px}.band-icon{width:18px;height:18px;flex-basis:18px}.secondary-readings.dashboard{margin-top:10px}.secondary-readings .metric,.secondary-readings .metric:nth-child(2n){padding:6px 10px}.secondary-readings .label{font-size:15px}.secondary-readings .value{font-size:29px;line-height:1.12}.ride-actions .primary-control,.ride-actions .clear-control{font-size:18px;padding:9px 16px;min-height:46px}.ride-actions{padding:5px 0;margin:3px 0 0}.control-buttons{gap:12px}.section-title{margin-top:26px}}
+@media(max-width:360px){main{padding-left:14px;padding-right:14px}.connection{gap:5px}.connection+.connection{padding-left:8px}.connection .step{font-size:14px}.connection .state{font-size:12px}.band-meta{gap:6px}.band-meta strong{font-size:11px}}
+@media(max-width:700px) and (max-height:750px){header{margin-bottom:5px}.secondary-readings.dashboard{margin-top:6px}.secondary-readings .metric{padding-top:5px;padding-bottom:5px}.band-connection{min-height:35px}.band-settings{min-height:35px}.secondary-readings .value{font-size:24px}.secondary-readings .metric,.secondary-readings .metric:nth-child(2n){padding-top:4px;padding-bottom:4px}.band-connection{padding-top:0;padding-bottom:0}}
 
-/* Wide-screen HR study: gauge left, trend and bike metrics right. */
-.hr-zone-panel,.hr-data-panel{min-width:0}
+/* Wide dashboard. */
 @media(min-width:901px){
   main{max-width:1695px;padding:22px 5vw 40px}
   header{margin-bottom:18px}h1{font-size:clamp(44px,4vw,68px)}
   .settings-button{font-size:clamp(19px,1.7vw,28px)}
   .connections{padding-bottom:17px}.connection .step{font-size:clamp(21px,1.8vw,29px)}.connection .state{font-size:clamp(18px,1.6vw,26px)}.connection .status-icon{width:clamp(27px,2.5vw,42px);height:clamp(27px,2.5vw,42px)}
   .band-connection{padding:10px 0}.band-meta strong{font-size:17px}.band-settings{font-size:15px}
-  .hr-focus{display:grid;grid-template-columns:minmax(0,37%) minmax(0,63%);column-gap:32px;max-width:none;margin:20px 0 16px;align-items:start;width:calc(100% - 32px)}
-  .hr-zone-panel{margin-top:-35px}
-  .hr-dial{width:100%;max-width:560px;height:auto;aspect-ratio:1.1;margin:0 auto}
-  .hr-reading{inset:37% 0 auto}.hr-reading #hr{font-size:clamp(98px,9.6vw,164px);letter-spacing:-.055em}.hr-unit{font-size:clamp(30px,2.8vw,46px)}
-  .zone-summary{grid-template-columns:1fr .78fr 1.45fr;margin:2px 0 0;font-size:clamp(18px,1.8vw,29px);gap:0;white-space:nowrap}.zone-summary strong{font-size:clamp(29px,2.7vw,44px)}.zone-summary>span:last-child{font-size:clamp(14px,1.5vw,24px)}
-  .hr-data-panel{padding-top:9px}.hr-trend{height:clamp(180px,12.5vw,210px)}
   .secondary-readings.dashboard{max-width:none;margin:14px 0 0}.secondary-readings .metric,.secondary-readings .metric:nth-child(2n){padding:5px 24px}.secondary-readings .metric:nth-child(2n){padding-left:34px}
   .secondary-readings .label{font-size:clamp(19px,1.65vw,27px);line-height:1.05}.secondary-readings .value{font-size:clamp(35px,3.1vw,52px);line-height:1}
-  .secondary-readings .power-hero{display:block;text-align:center;padding:12px 0 0}.secondary-readings .power-hero h2{font-size:clamp(20px,1.8vw,29px)}.secondary-readings .power-value,.secondary-readings .power-value.long{justify-content:center;font-size:clamp(43px,3.6vw,60px);margin-top:3px;color:#fafafa}
   .ride-actions{max-width:950px;width:68%;margin:18px auto 0;padding:5px 0}.control-buttons{gap:32px}.ride-actions .primary-control,.ride-actions .clear-control{max-width:none;font-size:clamp(24px,2.5vw,40px);min-height:clamp(58px,5.2vw,86px);padding:12px 24px}.ride-actions .primary-control .icon,.ride-actions .clear-control .icon{width:1.1em;height:1.1em}
 }
 
 .ride-entry-actions{grid-column:1/-1;display:flex;justify-content:flex-end;margin-top:8px}.ride-delete{font-size:14px;min-height:44px;padding:8px 14px;border:1px solid #875f55;border-radius:7px;color:var(--red);font-weight:600}.ride-delete:hover{color:#ffd2c7;border-color:#f2b0a0}.history-result{font-size:13px;color:var(--green);margin:12px 0;line-height:1.5}#delete-ride-summary{font-weight:650;color:#fafafa;overflow-wrap:anywhere}#delete-ride-result{min-height:1.4em}#recent-title:focus{outline:2px solid var(--green);outline-offset:4px}
-/* Align the complete reading to the same center used by the circular gauge. */
-.hr-dial .hr-reading{inset:53% 0 auto;transform:translateY(-50%);align-items:center}
-.hr-dial .hr-reading #hr{letter-spacing:-.045em;padding-right:.045em;line-height:.8}
-.hr-dial .hr-unit{position:absolute;top:calc(100% + 8px);left:0;right:0}
-@media(max-width:700px) and (max-height:750px){.hr-trend{height:100px}}
+
+/* Keep both live readouts the same size and leave the full width for the chart. */
+.live-overview{max-width:800px;margin:8px auto 0}
+.live-readouts{--reading-size:clamp(40px,15vw,80px);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:clamp(12px,4vw,28px);max-width:640px;margin:0 auto 13px}
+.live-reading{color:#fafafa;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:12px 6px;font-variant-numeric:tabular-nums}
+.live-number{font-size:var(--reading-size);font-weight:750;letter-spacing:-.045em;padding-right:.045em;line-height:.94;white-space:nowrap}
+.live-reading.long .live-number{font-size:calc(var(--reading-size) * .74)}
+.live-unit{font-size:clamp(15px,4.25vw,24px);font-weight:650;line-height:1.08;white-space:nowrap}
+.trend-toggle{display:block;width:100%;height:213px;min-height:0;padding:0;touch-action:manipulation}
+.trend-toggle:focus-visible{outline-offset:2px}
+.trend-toggle canvas{display:block;width:100%;height:100%}
+@media(min-width:901px){
+  .live-overview{max-width:none;margin-top:12px}
+  .live-readouts{--reading-size:clamp(68px,6.3vw,102px);margin-bottom:15px}
+  .trend-toggle{height:clamp(225px,16vw,263px)}
+}
+@media(max-width:700px){
+  .live-reading{padding:10px 6px 6px}
+  .live-readouts{margin-bottom:10px}
+  .trend-toggle{height:144px}
+}
+@media(max-width:700px) and (max-height:750px){.trend-toggle{height:125px}}
+@media(max-width:300px){
+  .status-trigger{flex-direction:column;gap:4px}
+  .connection .step{font-size:13px}
+  .connection .state{font-size:11px;overflow-wrap:anywhere}
+  .band-meta{flex-wrap:wrap;gap:2px 6px;min-width:0}
+  .band-settings{max-width:40%;white-space:normal}
+  .live-unit{font-size:13px}
+}
 /* Keep the saved-ride action alongside its summary and statistics. */
 .ride-row{grid-template-columns:minmax(0,32%) minmax(0,1fr) 44px;align-items:center}
 .ride-stats{padding-right:16px}
@@ -62,10 +79,10 @@ header{align-items:flex-start}.settings-button{flex-direction:column;align-items
 .ride-delete{width:44px;height:44px;padding:10px;border:0;border-radius:8px}
 .ride-delete .icon{width:22px;height:22px;color:inherit}
 .ride-delete:hover{background:#f2b0a012}
+.ride-start-date{display:block;color:var(--muted);font-size:clamp(10px,3vw,15px);line-height:1.2;margin-bottom:3px}
 @media(max-width:700px){.ride-summary{gap:8px}.ride-summary>.icon{width:28px;height:28px}.ride-stats{padding-left:12px;padding-right:6px}.ride-stat{display:block}.ride-stat dt{font-size:11px;margin-bottom:1px}.ride-stat dd{font-size:13px}}
 @media(min-width:480px) and (max-width:700px){.ride-stat{display:flex;align-items:baseline}.ride-stat dt{font-size:12px;margin:0}.ride-stat dd{font-size:14px}}
 @media(max-width:360px){.ride-summary>.icon{display:none}.ride-row{grid-template-columns:minmax(0,30%) minmax(0,1fr) 44px}}
-.trend-note{font-size:11px;text-align:center;margin-top:3px;line-height:1.3}.zone-summary:has(#zone-name){min-height:30px}
 .diagnostic-downloads{display:flex;flex-wrap:wrap;gap:8px 20px}.diagnostic-downloads a{display:inline-flex;align-items:center;min-height:44px;font-size:14px}#diagnostic-events{padding-left:20px;font-size:13px;line-height:1.7;overflow-wrap:anywhere}#diagnostic-panel .details-content p{margin:8px 0}
 </style>
 </head>
@@ -165,13 +182,15 @@ unicode: "f6ee"
 <div id="choose-rider-notice" class="notice" role="status" hidden><span id="choose-rider-message"></span> <button id="choose-rider-open">Choose rider</button></div>
 <span id="badge" class="sr-only" role="status">Connecting to ATOM</span>
 <button id="retry" hidden>Try bike connection again</button>
-<section class="hr-focus" aria-label="Heart rate and training zone">
-<div class="hr-zone-panel"><div class="hr-dial"><canvas id="zone-gauge" aria-hidden="true"></canvas><div class="hr-reading"><span id="hr">—</span><span class="hr-unit">bpm</span></div></div>
-<div class="zone-summary" id="zone-info" role="status"><strong id="zone-name">Waiting for HR</strong><span id="zone-effort">Wear your band</span><span id="zone-range">— bpm</span></div>
-<span id="hr-hint" class="sr-only">Waiting for band</span></div>
-<div class="hr-data-panel"><div class="hr-trend"><canvas id="hr-chart" role="img" aria-label="Live HR and power chart, waiting for readings"></canvas></div><p id="trend-note" class="hint trend-note" role="status">Collecting live readings…</p>
-<section class="dashboard secondary-readings" aria-label="Live bike readings"><div class="metrics"><article class="metric"><div class="label">Speed</div><div class="value"><span id="speed">—</span><span class="unit">km/h</span></div></article><article class="metric"><div class="label">Cadence</div><div class="value"><span id="cadence">—</span><span class="unit">rpm</span></div></article><article class="metric"><div class="label">Distance</div><div class="value"><span id="ride-distance">0.0</span><span class="unit">km</span></div></article><article class="metric"><div class="label">Time</div><div class="value"><span id="ride-duration">00:00</span></div></article><article class="power-hero"><h2>Power</h2><div class="power-value" id="power-value"><span id="power">—</span><span class="unit">W</span></div></article><article class="sr-only"><span id="ride-calories">0</span></article></div></section>
-</div></section>
+<section class="live-overview" aria-label="Live heart rate and power">
+<div class="live-readouts">
+  <div class="live-reading" id="hr-value"><span class="sr-only">Heart rate</span><span class="live-number" id="hr">—</span><span class="live-unit">bpm<span id="hr-zone"></span></span><span id="hr-hint" class="sr-only">Waiting for band</span></div>
+  <div class="live-reading" id="power-value"><span class="sr-only">Power</span><span class="live-number" id="power">—</span><span class="live-unit">W</span></div>
+</div>
+<button type="button" class="trend-toggle" id="trend-toggle" aria-label="Power chart, last 15 minutes. Switch to 30 minutes."><canvas id="hr-chart" aria-hidden="true"></canvas></button>
+<p id="trend-note" class="sr-only" role="status">Last 15 minutes</p>
+<section class="dashboard secondary-readings" aria-label="Live bike readings"><div class="metrics"><article class="metric"><div class="label">Speed</div><div class="value"><span id="speed">—</span><span class="unit">km/h</span></div></article><article class="metric"><div class="label">Cadence</div><div class="value"><span id="cadence">—</span><span class="unit">rpm</span></div></article><article class="metric"><div class="label">Distance</div><div class="value"><span id="ride-distance">0.0</span><span class="unit">km</span></div></article><article class="metric"><div class="label">Time</div><div class="value"><span id="ride-duration">00:00</span></div></article><article class="sr-only"><span id="ride-calories">0</span></article></div></section>
+</section>
 <div class="ride-actions"><div class="control-buttons"><button id="ride-control" class="primary-control" disabled><span id="control-icon"><svg class="icon" aria-hidden="true"
   xmlns="http://www.w3.org/2000/svg"
   width="24"
@@ -215,6 +234,7 @@ unicode: "ea61"
 </svg></button></div>
 <p id="history-result" class="history-result" role="status" hidden></p>
 <p id="history-warning" class="notice" data-error="true" role="status" hidden></p>
+<button id="recover-history" type="button" class="small-action" hidden>Recover history</button>
 <div id="history-empty" class="empty">No saved rides yet. Your ride is saved when the bike disconnects or after 10 minutes without pedalling, or choose Save &amp; finish in Options.</div>
 <div id="history-wrap" hidden><div id="history" aria-label="Saved rides, newest first"></div></div>
 <div class="history-meta"><p>Saved on the ATOM. Latest 20 rides kept across power cycles.</p><span id="history-count">0 / 20 saved</span></div></section>
@@ -227,6 +247,7 @@ unicode: "ea61"
 </main>
 <div id="connection-tooltip" class="connection-tooltip" role="tooltip" hidden></div>
 <dialog id="delete-ride-dialog" aria-labelledby="delete-ride-title" aria-describedby="delete-ride-summary delete-ride-description"><h2 id="delete-ride-title">Delete saved ride?</h2><p id="delete-ride-summary"></p><p id="delete-ride-description">This removes this entry from history. It cannot be undone.</p><p id="delete-ride-result" class="form-result" role="status"></p><div class="actions"><button id="delete-ride-cancel" autofocus>Cancel</button><button id="delete-ride-confirm" class="danger">Delete ride</button></div></dialog>
+<dialog id="recover-dialog" aria-labelledby="recover-title"><h2 id="recover-title">Start fresh ride history?</h2><p>The ATOM will verify a backup of the unreadable history before replacing it. A stopped ride with data will be saved into the fresh history.</p><p id="recover-result" class="form-result" role="status"></p><div class="actions"><button id="recover-cancel" autofocus>Cancel</button><button id="recover-confirm" class="danger">Back up and start fresh</button></div></dialog>
 <dialog id="clear-dialog" aria-labelledby="clear-title"><h2 id="clear-title">Discard this dashboard ride?</h2><p>Its dashboard totals will reset without adding a history entry. Saved rides, the bike console and the Garmin activity are unaffected.</p><p id="clear-result" role="status"></p><div class="actions"><button id="clear-cancel" class="secondary-button">Cancel</button><button id="clear-confirm" class="danger">Discard current ride</button></div></dialog>
 <dialog id="wifi-dialog" aria-labelledby="wifi-title"><h2 id="wifi-title">Change Wi-Fi</h2><ol><li>Hold the ATOM's front button for four seconds.</li><li>On your phone, join the network named AirBike-Setup-xxxxxx.</li><li>Open <a href="http://192.168.77.1/">http://192.168.77.1/</a> and enter your new 2.4 GHz Wi-Fi name and password.</li><li>After it connects, return to your normal Wi-Fi and open <a href="http://airbike-atom.local/">airbike-atom.local</a> or the new address shown by setup.</li></ol><p>The password is entered only on the local setup page. Keep your Mac on its normal network if you want to stay connected to Codex during setup.</p><div class="actions"><button id="wifi-close">Done</button></div></dialog>
 
@@ -235,7 +256,7 @@ unicode: "ea61"
 <section class="settings-section"><h3>Display</h3><label class="toggle"><input type="checkbox" id="keep-awake" checked>Keep screen awake</label><p id="awake-status" class="hint" role="status">Tap the dashboard to enable.</p><p class="hint">Enabled by default. Saved in this browser. Applies while this page is visible; your phone can still lock manually or pause it to save power.</p></section>
 <section class="settings-section"><h3>Diagnostics</h3><label class="toggle"><input type="checkbox" id="record-diagnostics" checked disabled>Record diagnostics</label><p id="diagnostic-setting-status" class="hint" role="status">Loading the ATOM’s preference…</p><p class="hint">Enabled by default. Keeps the latest ride report across power cycles, with a checkpoint every five minutes. An unexpected unplug can lose the unsaved final five minutes. Download reports under Technical diagnostics.</p></section>
 <section class="settings-section"><h3>Automatic recording</h3><p class="hint" id="auto-lock">Change these settings between rides. Manual Stop always requires Resume.</p><form id="auto-form"><fieldset id="auto-fields"><div class="form-grid"><label class="toggle"><input type="checkbox" id="auto-start" checked>Auto start / resume</label><label class="field">Seconds of pedalling<input type="number" id="start-seconds" min="1" max="600" step="1" value="3" required></label><label class="toggle"><input type="checkbox" id="auto-stop" checked>Auto stop</label><label class="field">Seconds without pedalling<input type="number" id="stop-seconds" min="1" max="600" step="1" value="10" required></label><button type="submit" class="full">Save automatic controls</button></div></fieldset><p id="auto-result" class="form-result" role="status"></p></form><p class="hint">Cadence or power counts as activity. A coasting fan does not. Rides finish automatically on bike disconnection or after 10 minutes without pedalling.</p></section>
-<section class="settings-section"><h3>Riders</h3><p class="hint">Up to 10 profiles, saved only on the ATOM. Guest is always available. Other than the name, fields are optional.</p><form id="rider-form"><div class="form-grid"><label class="field full">Add or edit<select id="edit-rider"><option value="0">New rider</option></select></label><label class="field full">Name<input id="rider-name" maxlength="48" autocomplete="off" required></label><label class="field">Sex<select id="rider-sex"><option value="0">Unspecified</option><option value="1">Female</option><option value="2">Male</option></select></label><label class="field">Age<input type="number" id="rider-age" min="1" max="120" step="1" inputmode="numeric"></label><label class="field">Weight · kg<input type="number" id="rider-weight" min="1" max="500" step="0.1" inputmode="decimal"></label><label class="field">Maximum HR · bpm<input type="number" id="rider-maxhr" min="30" max="250" step="1" inputmode="numeric"></label><button type="submit" class="full">Save rider</button></div><p id="rider-result" class="form-result" role="status"></p></form></section>
+<section class="settings-section"><h3>Riders</h3><p class="hint">Up to 10 profiles, saved only on the ATOM. Guest is always available. Other than the name, fields are optional.</p><form id="rider-form"><div class="form-grid"><label class="field full">Add or edit<select id="edit-rider"><option value="0">New rider</option></select></label><label class="field full">Name<input id="rider-name" maxlength="48" autocomplete="off" required></label><label class="field">Sex<select id="rider-sex"><option value="0">Unspecified</option><option value="1">Female</option><option value="2">Male</option></select></label><label class="field">Age<input type="number" id="rider-age" min="1" max="120" step="1" inputmode="numeric"></label><label class="field">Weight · kg<input type="number" id="rider-weight" min="1" max="500" step="0.1" inputmode="decimal"></label><label class="field">Maximum HR · bpm<input type="number" id="rider-maxhr" min="30" max="250" step="1" inputmode="numeric"></label><label class="field full">Cycling FTP · W<input id="rider-ftp" type="number" min="1" max="2000" step="1" inputmode="numeric" aria-describedby="rider-ftp-hint"><span id="rider-ftp-hint" class="hint">Use the FTP from your Garmin cycling power zones.</span></label><button type="submit" class="full">Save rider</button></div><p id="rider-result" class="form-result" role="status"></p></form></section>
 <section class="settings-section" id="band-section"><h3>Polar H10 · rider bands</h3><p class="hint">Wear the band and enable its “2 Bluetooth devices” setting in Polar Flow or Beat. Garmin stays connected directly; the ATOM uses another Bluetooth connection.</p><p id="sensor-value" class="sensor-value">— bpm</p><p id="sensor-status" class="hint">No H10 selected</p><label class="field band-owner-field">Link a band to rider<select id="band-rider"><option value="">Add a rider first</option></select></label><p id="band-link-status" class="hint">Add rider profiles, then link each person's band here.</p><button id="band-unlink" class="small-action" disabled>Unlink this rider's band</button><button id="hr-scan" class="small-action">Find Polar H10</button><div id="hr-devices" class="sensor-devices"></div><p id="sensor-result" class="form-result" role="status"></p><p class="hint">Each rider can have their own remembered band. Choose Auto in Options to detect the rider. When several linked bands are detected, the dashboard asks you to choose. Once a ride starts, its rider and band stay locked until the ride finishes. Missing HR never blocks a ride. Set Maximum HR in the rider profile to enable zones: below 60%, 60–70%, 70–80%, 80–90% and 90%+. Calories come from the bike console.</p></section>
 </dialog>
 <dialog id="rider-choice-dialog" aria-labelledby="rider-choice-title"><div class="dialog-heading"><h2 id="rider-choice-title">Who is riding?</h2><button id="rider-choice-close">Later</button></div><p>Several linked bands were detected. Choose the rider before dashboard recording starts. Garmin forwarding continues.</p><div id="rider-choices" class="rider-choices"></div><p id="rider-choice-result" class="form-result" role="status"></p><button id="rider-choice-options" class="small-action">Other rider / Guest</button></dialog>
@@ -252,15 +273,15 @@ let previousPowerCount = null, lastForwardedAt = -Infinity;
 let rideData=null, busyControl=false, riders=[], sensorBusy=false, choicePrompted="",choiceBusy=false;
 const icons = {'good': '<!--\nversion: "2.3"\nunicode: "f704"\n-->\n<svg class="icon" aria-hidden="true"\n  xmlns="http://www.w3.org/2000/svg"\n  width="24"\n  height="24"\n  viewBox="0 0 24 24"\n  fill="currentColor"\n>\n  <path d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-1.293 5.953a1 1 0 0 0 -1.32 -.083l-.094 .083l-3.293 3.292l-1.293 -1.292l-.094 -.083a1 1 0 0 0 -1.403 1.403l.083 .094l2 2l.094 .083a1 1 0 0 0 1.226 0l.094 -.083l4 -4l.083 -.094a1 1 0 0 0 -.083 -1.32z" />\n</svg>', 'warn': '<!--\nversion: "2.3"\nunicode: "f6ee"\n-->\n<svg class="icon" aria-hidden="true"\n  xmlns="http://www.w3.org/2000/svg"\n  width="24"\n  height="24"\n  viewBox="0 0 24 24"\n  fill="currentColor"\n>\n  <path d="M12 2c5.523 0 10 4.477 10 10a10 10 0 0 1 -19.995 .324l-.005 -.324l.004 -.28c.148 -5.393 4.566 -9.72 9.996 -9.72zm.01 13l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007zm-.01 -8a1 1 0 0 0 -.993 .883l-.007 .117v4l.007 .117a1 1 0 0 0 1.986 0l.007 -.117v-4l-.007 -.117a1 1 0 0 0 -.993 -.883z" />\n</svg>', 'idle': '<!--\nversion: "2.3"\nunicode: "f704"\n-->\n<svg class="icon" aria-hidden="true"\n  xmlns="http://www.w3.org/2000/svg"\n  width="24"\n  height="24"\n  viewBox="0 0 24 24"\n  fill="currentColor"\n>\n  <path d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-1.293 5.953a1 1 0 0 0 -1.32 -.083l-.094 .083l-3.293 3.292l-1.293 -1.292l-.094 -.083a1 1 0 0 0 -1.403 1.403l.083 .094l2 2l.094 .083a1 1 0 0 0 1.226 0l.094 -.083l4 -4l.083 -.094a1 1 0 0 0 -.083 -1.32z" />\n</svg>'};
 function card(id, state, title, hint) { el(id + '-card').dataset.state = state; text(id + '-status', title); text(id + '-hint', hint); el(id+'-icon').innerHTML=icons[state] || icons.warn; if(tooltipOwner===id)updateTooltip(); }
-function clearInstant() { ['power','cadence','speed'].forEach(id => text(id,'—')); }
+function clearInstant() { renderPower(null, null); ['cadence','speed'].forEach(id => text(id,'—')); }
 function unavailable() {
-  clearInstant(); el('band-icon').innerHTML=icons.warn;el('band-icon').parentElement.dataset.state='warn';text('band-state','Unavailable');text('band-detail','Cannot reach the ATOM to check the band connection.');text('hr','—');renderHeartFocus(null);text('sensor-value','— bpm');text('sensor-status','ATOM unavailable; waiting to reconnect.');
+  clearInstant(); el('band-icon').innerHTML=icons.warn;el('band-icon').parentElement.dataset.state='warn';text('band-state','Unavailable');text('band-detail','Cannot reach the ATOM to check the band connection.');renderHeartRate(null);drawTrend();text('sensor-value','— bpm');text('sensor-status','ATOM unavailable; waiting to reconnect.');
   el('badge').dataset.state = 'bad'; text('badge','ATOM unreachable');
   card('bike','warn','Unavailable','Reconnect to the ATOM to check the bike link.');
   card('garmin','warn','Unavailable','The Bluetooth relay may still be running; this page cannot confirm it.');
   card('flow','warn','Unavailable','Check ATOM power and local Wi-Fi. The page reconnects automatically.');
   el('network-notice').hidden = false; text('network-notice','Dashboard connection lost. Saved history and totals shown below may not be up to date.');
-  text('age','No recent update from ATOM'); el('clear').disabled = true; el('ride-control').disabled=true; el('finish').disabled=true; el('retry').hidden = true;
+  text('age','No recent update from ATOM'); el('clear').disabled=true; el('clear-confirm').disabled=true; el('ride-control').disabled=true; el('finish').disabled=true; el('retry').hidden = true;
 }
 function render(d, extraAge) {
   extraAge = extraAge || 0;
@@ -281,7 +302,7 @@ function render(d, extraAge) {
   }
   card('flow',state,title,hint);
   el('badge').dataset.state = state === 'good' ? 'good':'warn'; text('badge',title);
-  if (fresh) { text('power',d.metrics.power_w); el('power-value').classList.toggle('long', String(d.metrics.power_w).length > 3); text('cadence',number(d.metrics.cadence_rpm,0)); text('speed',number(d.metrics.speed_kph,1)); el('speed').parentElement.classList.toggle('long-number',d.metrics.speed_kph >= 100); }
+  if (fresh) { renderPower(d.metrics.power_w,d.ftp_w); text('cadence',number(d.metrics.cadence_rpm,0)); text('speed',number(d.metrics.speed_kph,1)); el('speed').parentElement.classList.toggle('long-number',d.metrics.speed_kph >= 100); }
   else clearInstant();
   text('live-hint', d.console_state === 128 && fresh ? 'The console is repeating its final values. Current dashboard totals will be saved after 10 minutes without pedalling or when the bike disconnects.' : fresh ? 'Live values come from the bike. Your Garmin receives them directly over Bluetooth.' : 'Fresh bike readings are needed before the ATOM can forward measurements.');
   text('received', d.data_packets + ' workout packets received');
@@ -297,9 +318,10 @@ function render(d, extraAge) {
   text('hr-diagnostic',(d.hr && d.hr.detail) || 'No H10 selected');
   text('relay',r.ready ? 'Power: ' + (r.power_subscribed ? 'subscribed':'not subscribed') + '; optional CSC: ' + (r.csc_subscribed ? 'subscribed':'not used') + '; sent ' + (r.power_notifications || 0) + '; failures ' + (r.send_failures || 0) + '; advertising ' + (r.advertising ? 'active':'inactive') + '; output links ' + (r.output_connections || 0) + '; virtual wheel ' + r.wheel_mm + ' mm' : 'Relay unavailable');
   el('retry').hidden = d.status !== 'unsupported';
-  el('clear').disabled = !rideActive || !ridesFresh || clearing || busyControl || (rideData && rideData.saving);
+  updateClearButtons();
 }
 let savedHistory = [], showAllHistory = false, pendingHistoryDelete=null, deletingHistory=false;
+const rideDateFormat=new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',year:'numeric'});
 function renderHistory() {
   const focusedDelete=document.activeElement.classList.contains('ride-delete')?document.activeElement.dataset.rideId:null;
   el('history-toggle').hidden = savedHistory.length < 2;
@@ -310,6 +332,12 @@ function renderHistory() {
     const summary=document.createElement('div'); summary.className='ride-summary';
     summary.innerHTML='<!--\ntags: [cycling, bicycle, sport, wheel, bike, transport, travel, vehicle, automobile, mobility]\ncategory: Vehicles\nversion: "1.0"\nunicode: "ea36"\n-->\n<svg class="icon" aria-hidden="true"\n  xmlns="http://www.w3.org/2000/svg"\n  width="24"\n  height="24"\n  viewBox="0 0 24 24"\n  fill="none"\n  stroke="currentColor"\n  stroke-width="2"\n  stroke-linecap="round"\n  stroke-linejoin="round"\n>\n  <path d="M2 18a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />\n  <path d="M16 18a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />\n  <path d="M12 19l0 -4l-3 -3l5 -4l2 3l3 0" />\n  <path d="M16 5a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />\n</svg>';
     const totals=document.createElement('div');
+    if(Number.isFinite(item.started_at)&&item.started_at>0){
+      const started=new Date(item.started_at*1000);
+      const date=document.createElement('time');date.className='ride-start-date';
+      date.dateTime=started.toISOString();date.textContent=rideDateFormat.format(started);
+      totals.append(date);
+    }
     const duration=document.createElement('div'); duration.className='ride-duration'; duration.textContent=clock(item.duration_s);
     const distance=document.createElement('div'); distance.className='ride-distance'; distance.textContent=number(item.distance_m/1000,1)+' km';
     if(item.rider_name && item.rider_name!=='Guest'){const who=document.createElement('p');who.className='ride-rider';who.textContent=item.rider_name;totals.append(who);}
@@ -336,7 +364,7 @@ function renderHR(h, extraAge=0){
   focusMaxHR=Number(h.max_hr)>0?Number(h.max_hr):null;
   const sel=h.selection||(rideData&&rideData.selection)||{ready:true,mode:'manual'};
   const valid=h.connected&&h.bpm!==null&&h.bpm!==undefined&&h.contact!==false&&h.data_age_ms!==null&&(h.data_age_ms+extraAge)<5000;
-  text('hr',valid?h.bpm:'—');text('sensor-value',(valid?h.bpm:'—')+' bpm');
+  text('sensor-value',(valid?h.bpm:'—')+' bpm');
   const owner=h.rider_name||(sel.ready?sel.rider_name:'')||'';
   let state='No band linked',hint=owner?owner+' · Link a Polar H10 in Band settings.':'Link each rider’s band in Band settings.';
   if(!sel.ready&&sel.mode==='auto'){
@@ -350,7 +378,8 @@ function renderHR(h, extraAge=0){
   }
   text('band-state',state);text('band-detail',hint);el('band-icon').innerHTML=valid?icons.good:icons.warn;
   el('band-icon').parentElement.dataset.state=valid?'good':'warn';
-  text('hr-hint',hint);text('sensor-status',hint);el('hr').parentElement.title=hint; renderHeartFocus(valid?h.bpm:null);
+  text('hr-hint',hint);text('sensor-status',hint);el('hr-value').title=hint;
+  renderHeartRate(valid?h.bpm:null);drawTrend();
 }
 function showRiderChoice(){
   if(!rideData||!rideData.selection)return;const sel=rideData.selection;
@@ -362,8 +391,21 @@ function showRiderChoice(){
   el('rider-choices').replaceChildren(...buttons);
   if(!el('rider-choice-dialog').open)el('rider-choice-dialog').showModal();
 }
+function updateClearButtons() {
+  const canClear=rideData?.can_clear ?? (rideData?.active && (!rideData.saving || rideData.history_corrupt));
+  const disabled=!canClear || !ridesFresh || clearing || busyControl;
+  el('clear').disabled=disabled;
+  el('clear-confirm').disabled=disabled;
+}
 function renderRides(data) {
+  const historyChanged=Array.isArray(data.history);
+  const activeChanged=rideActive!==data.active;
   rideData=data;rideActive=data.active;
+  if(activeChanged){
+    if(trendData)trendData.points=trendData.points.map(([age,,watts])=>[age,null,watts]);
+    trendAttemptAt=-Infinity;
+    drawTrend();
+  }
   const r=data.current,state=data.state || (data.active?'recording':'ready');
   const sel=data.selection||{mode:'manual',ready:true,status:'manual',candidates:[]};
   text('rider-label',data.active?'Rider · '+r.rider_name:sel.ready?'Rider · '+data.selected_rider.name+(sel.mode==='auto'?' (Auto)':''):sel.status==='choose'?'Auto · Choose rider':sel.status==='scanning'?'Auto · Looking for bands':'Auto · Waiting for a linked band');
@@ -375,27 +417,54 @@ function renderRides(data) {
     const key=(sel.candidates||[]).map(r=>r.id).join(',');
     if(key!==choicePrompted&&!el('settings-dialog').open&&!el('options-dialog').open){choicePrompted=key;showRiderChoice();}
   }else{choicePrompted='';if(el('rider-choice-dialog').open)el('rider-choice-dialog').close();}
-  text('ride-state',data.saving?'Saving ride…':state==='recording'?'Recording':state==='stopped'?'Ride stopped':'');
+  text('ride-state',data.saving?(data.history_corrupt?'Ride retained · history needs recovery':'Saving ride…'):state==='recording'?'Recording':state==='stopped'?'Ride stopped':'');
   el('ride-state').hidden=state==='ready'&&!data.saving;
   text('control-label',state==='recording'?'Stop':state==='stopped'?'Resume':'Start');
   el('control-icon').innerHTML=state==='recording'?stopIcon:playIcon;
   el('ride-control').disabled=busyControl||data.saving||(!data.can_start&&state!=='recording');
-  el('clear').hidden=state!=='stopped';el('clear').disabled=clearing||busyControl||data.saving;
+  el('clear').hidden=state!=='stopped';updateClearButtons();
   el('finish').disabled=!data.active||busyControl;el('rider-select').disabled=data.active;
   el('auto-fields').disabled=data.active;el('band-rider').disabled=data.active;updateBandLink();
   text('rider-lock',data.active?'Save or clear the current ride before switching riders.':'Choose a rider before starting.');
   text('ride-distance',number(r.distance_m/1000,1));text('ride-duration',clock(r.duration_s));text('ride-power',number(r.avg_power_w,1));text('ride-calories',data.calories_kcal||0);
   el('ride-duration').classList.toggle('long-time',r.duration_s>=3600);
   el('history-warning').hidden=data.storage_ok;
-  text('history-warning','History could not be read or saved to flash. Any pending ride is retained for retry; use Save & finish.');
-  text('history-count',data.history.length+' / 20 saved');
-  el('history-empty').hidden=data.history.length!==0;el('history-wrap').hidden=data.history.length===0;
-  savedHistory=data.history;renderHistory();
+  el('recover-history').hidden=!data.history_corrupt;
+  el('recover-history').disabled=state==='recording'||recoveringHistory;
+  let historyWarning='History could not be saved to flash. A pending ride is retained for retry. Use Save & finish.';
+  if(data.history_corrupt)historyWarning=data.saving&&data.can_clear===false
+    ? 'Retry Recover history to verify the save before clearing this ride.'
+    : 'Saved history is unreadable. Stop the ride, then use Recover history to back up the record and restore saving.';
+  text('history-warning',historyWarning);
+  if(historyChanged){
+    savedHistory=data.history;
+    text('history-count',savedHistory.length+' / 20 saved');
+    el('history-wrap').hidden=savedHistory.length===0;
+    renderHistory();
+  }
+  el('history-empty').hidden=data.history_corrupt||savedHistory.length!==0;
 }
+let rideRequest=0, writeRequest=0;
 async function fetchJSON(url, options) {
-  const response=await fetch(url,{cache:'no-store',signal:AbortSignal.timeout(3000),...(options || {})});
+  const mutation=options?.method==='POST';
+  let response;
+  try {
+    response=await fetch(url,{cache:'no-store',signal:AbortSignal.timeout(mutation?15000:3000),...options});
+  } catch(error) {
+    if(!mutation)throw error;
+    throw Object.assign(new Error('No confirmation from the ATOM. The change may have been saved.'),{uncertain:true});
+  }
   if(!response.ok) throw new Error(await response.text());
-  return response.json();
+  try{return await response.json();}
+  catch(error){
+    if(!mutation)throw error;
+    throw Object.assign(new Error('No confirmation from the ATOM. The change may have been saved.'),{uncertain:true});
+  }
+}
+async function checkAfterWrite(error,readBack){
+  if(!error.uncertain)return error.message;
+  try{await readBack();return 'No confirmation from the ATOM. Check the refreshed values before trying again.';}
+  catch(_){return 'No confirmation from the ATOM. Refresh the page and check the result before trying again.';}
 }
 async function refresh() {
   try {
@@ -406,20 +475,36 @@ async function refresh() {
     previousPowerCount=count;
     latest=data; receivedAt=lastSuccess=performance.now(); render(data);
   } catch(_) { if(!lastSuccess || performance.now()-lastSuccess>=4000) unavailable(); }
-  try { const rides=await fetchJSON('/api/rides'); ridesFresh=true; renderRides(rides); }
-  catch(_) { ridesFresh=false; el('ride-control').disabled=true;el('finish').disabled=true; el('clear').disabled=true; el('history-warning').hidden=false; text('history-warning','Ride history is unavailable. Waiting to reconnect to the ATOM.'); }
+  try { await reloadRide(true); }
+  catch(_) { ridesFresh=false; el('ride-control').disabled=true;el('finish').disabled=true; updateClearButtons(); el('recover-history').disabled=true; el('history-warning').hidden=false; text('history-warning','Ride history is unavailable. Waiting to reconnect to the ATOM.'); }
   if(performance.now()-trendAttemptAt>=5000){trendAttemptAt=performance.now();try{trendData=await fetchJSON('/api/trend');trendReceivedAt=performance.now();drawTrend();}catch(_){text('trend-note','Chart unavailable · reconnecting…');}}
   if(el('settings-dialog').open)refreshSensor().catch(()=>{});
   setTimeout(refresh,1000);
 }
 setInterval(()=>{if(!latest)return;if(performance.now()-lastSuccess>=4000)unavailable();else render(latest,performance.now()-receivedAt);},500);
 function result(id,message,error=false){text(id,message);el(id).dataset.error=String(error);}
-async function post(url,action,fields={}){return fetchJSON(url,{method:'POST',headers:{'X-AirBike-Action':action,'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(fields)});}
-async function reloadRide(){const d=await fetchJSON('/api/rides');ridesFresh=true;renderRides(d);}
+async function post(url,action,fields={}){
+  ++writeRequest;
+  try{return await fetchJSON(url,{method:'POST',headers:{'X-AirBike-Action':action,'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(fields)});}
+  finally{++writeRequest;}
+}
+async function reloadRide(useCache=false){
+  const request=++rideRequest, write=writeRequest;
+  const version=useCache&&rideData?.history_version;
+  const data=await fetchJSON('/api/rides'+(version?'?history_version='+encodeURIComponent(version):''));
+  if(request!==rideRequest||write!==writeRequest)return null;
+  if(!Array.isArray(data.history)&&data.history_version!==rideData?.history_version)return null;
+  ridesFresh=true;renderRides(data);
+  return data;
+}
 async function control(action){
   if(busyControl||!rideData)return;busyControl=true;el('ride-control').disabled=true;el('finish').disabled=true;el('control-error').hidden=true;
   try {const d=await post('/api/rides/control','ride-control',{action});ridesFresh=true;renderRides(d);result('options-result',action==='finish'?'Ride saved. Ready for the next rider.':'');}
-  catch(error){text('control-error',error.message);el('control-error').hidden=false;result('options-result',error.message,true);await reloadRide().catch(()=>{});}
+  catch(error){
+    const message=await checkAfterWrite(error,reloadRide);
+    text('control-error',message);el('control-error').hidden=false;result('options-result',message,true);
+    if(!error.uncertain)await reloadRide().catch(()=>{});
+  }
   finally{busyControl=false;if(rideData)renderRides(rideData);}
 }
 el('ride-control').addEventListener('click',()=>control(rideData.state==='recording'?'stop':rideData.state==='stopped'?'resume':'start'));
@@ -427,10 +512,18 @@ el('finish').addEventListener('click',()=>control('finish'));
 el('clear').addEventListener('click',()=>{text('clear-result','');el('clear-dialog').showModal();});
 el('clear-cancel').addEventListener('click',()=>el('clear-dialog').close());
 el('clear-confirm').addEventListener('click',async()=>{
-  if(clearing)return;clearing=true;el('clear-confirm').disabled=true;text('clear-result','Discarding ride…');
+  if(el('clear-confirm').disabled)return;
+  clearing=true;updateClearButtons();text('clear-result','Discarding ride…');
   try{await post('/api/rides/clear','clear-ride');el('clear-dialog').close();el('control-error').hidden=true;await reloadRide();}
-  catch(error){text('clear-result',error.message);}
-  finally{clearing=false;el('clear-confirm').disabled=false;if(rideData)renderRides(rideData);}
+  catch(error){
+    const message=await checkAfterWrite(error,async()=>{
+      const data=await reloadRide();
+      if(data&&!data.active)el('clear-dialog').close();
+    });
+    if(!error.uncertain)await reloadRide().catch(()=>{});
+    text('clear-result',message);
+  }
+  finally{clearing=false;if(rideData)renderRides(rideData);}
 });
 function fillRiders(data){
   riders=data.riders;const selected=data.mode==='auto'?'auto':String(data.selected_id);
@@ -443,32 +536,80 @@ function fillRiders(data){
   el('band-rider').value=riders.some(r=>String(r.id)===owner)?owner:riders.some(r=>String(r.id)===String(data.selection&&data.selection.rider_id))?String(data.selection.rider_id):riders.length?String(riders[0].id):'';
   updateBandLink();
 }
-function editRider(){const r=riders.find(r=>String(r.id)===el('edit-rider').value)||{};
-  el('rider-name').value=r.name||'';el('rider-sex').value=String(r.sex||0);el('rider-age').value=r.age||'';el('rider-weight').value=r.weight_kg||'';el('rider-maxhr').value=r.max_hr||'';result('rider-result','');if(r.id)el('band-rider').value=String(r.id);updateBandLink();}
+let riderCreateKey='';
+function newRiderCreateKey(){
+  const bytes=crypto.getRandomValues(new Uint8Array(8));
+  bytes[0]|=0x80;
+  return Array.from(bytes,byte=>byte.toString(16).padStart(2,'0')).join('');
+}
+function editRider(keepFields=false){
+  const r=riders.find(r=>String(r.id)===el('edit-rider').value)||{};
+  if(!keepFields){
+    el('rider-name').value=r.name||'';el('rider-sex').value=String(r.sex||0);el('rider-age').value=r.age||'';el('rider-weight').value=r.weight_kg||'';el('rider-maxhr').value=r.max_hr||'';el('rider-ftp').value=r.ftp_w||'';
+  }
+  result('rider-result','');if(r.id)el('band-rider').value=String(r.id);updateBandLink();
+}
 async function loadSettings(){
   AirBikeDiagnostics.refresh();
   const [settings,people]=await Promise.all([fetchJSON('/api/settings'),fetchJSON('/api/riders')]);
   fillRiders(people);el('auto-start').checked=settings.auto_start;el('auto-stop').checked=settings.auto_stop;
   el('start-seconds').value=settings.start_seconds;el('stop-seconds').value=settings.stop_seconds;
   el('settings-warning').hidden=settings.storage_ok;text('settings-warning','Settings storage is unavailable. Changes may not survive a restart.');
-  editRider();await refreshSensor();
+  if(!riderCreateKey||el('edit-rider').value!=='0')editRider();
+  await refreshSensor();
 }
+async function refreshRiders(){fillRiders(await fetchJSON('/api/riders'));}
 function updateBandLink(){
   const r=riders.find(r=>String(r.id)===el('band-rider').value);
   text('band-link-status',!r?'Add rider profiles above, then link a band to each rider.':r.band_address?r.name+' · '+(r.band_name||'Polar H10')+' · '+r.band_address:r.name+' · No band linked yet.');
   el('band-unlink').disabled=!r||!r.band_address||sensorBusy||(rideData&&rideData.active);
 }
-async function refreshSensor(){
-  const h=await fetchJSON('/api/hr/sensor');renderHR(h);el('hr-scan').disabled=h.scanning||sensorBusy;text('hr-scan',h.scanning?'Looking for H10…':'Find Polar H10');
+const bandButtons=new Map();
+let sensorPoll=0;
+const bandKey=(address,type)=>type+':'+String(address).toLowerCase();
+function updateBandButtons(){
+  const disabled=sensorBusy||!el('band-rider').value||!!rideData?.active;
+  for(const {button} of bandButtons.values())button.disabled=disabled;
+}
+async function linkBand(device){
   const owner=el('band-rider').value;
-  const nodes=(h.devices||[]).filter(d=>d.available!==false).map(d=>{const button=document.createElement('button');button.type='button';
-    const name=document.createElement('span');name.textContent=d.name;const meta=document.createElement('small');
-    const linked=riders.find(r=>r.band_address===d.address&&r.band_type===d.type);
-    meta.textContent=(linked?'Linked to '+linked.name+' · ':d.address+' · ')+d.rssi+' dBm';button.append(name,meta);
-    button.disabled=sensorBusy||!owner||(rideData&&rideData.active);button.addEventListener('click',async()=>{sensorBusy=true;result('sensor-result','Linking band…');
-      try{await post('/api/hr/sensor','hr-sensor',{action:'select',rider_id:el('band-rider').value,address:d.address,type:d.type});fillRiders(await fetchJSON('/api/riders'));result('sensor-result','Band linked to rider. Choose Auto or a rider in Options.');}
-      catch(e){result('sensor-result',e.message,true);}finally{sensorBusy=false;refreshSensor().catch(()=>{});}});return button;});
-  el('hr-devices').replaceChildren(...nodes);
+  if(sensorBusy||!owner||rideData?.active)return;
+  sensorBusy=true;updateBandButtons();updateBandLink();result('sensor-result','Linking band…');
+  try{
+    await post('/api/hr/sensor','hr-sensor',{action:'select',rider_id:owner,address:device.address,type:device.type});
+    await refreshRiders();
+    result('sensor-result','Band linked to rider. Choose Auto or a rider in Options.');
+  }catch(error){result('sensor-result',await checkAfterWrite(error,refreshRiders),true);}
+  finally{sensorBusy=false;updateBandButtons();updateBandLink();refreshSensor().catch(()=>{});}
+}
+async function refreshSensor(){
+  const request=++sensorPoll;
+  const h=await fetchJSON('/api/hr/sensor');
+  if(request!==sensorPoll)return;
+  renderHR(h);el('hr-scan').disabled=h.scanning||sensorBusy;text('hr-scan',h.scanning?'Looking for H10…':'Find Polar H10');
+  const visible=new Set();
+  for(const device of h.devices||[]){
+    if(device.available===false)continue;
+    const key=bandKey(device.address,device.type);
+    visible.add(key);
+    let row=bandButtons.get(key);
+    if(!row){
+      const button=document.createElement('button'),name=document.createElement('span'),meta=document.createElement('small');
+      button.type='button';button.append(name,meta);
+      row={button,name,meta,device};
+      button.addEventListener('click',()=>linkBand(row.device));
+      bandButtons.set(key,row);el('hr-devices').append(button);
+    }
+    row.device=device;
+    const linked=riders.find(r=>bandKey(r.band_address,r.band_type)===key);
+    const description=(linked?'Linked to '+linked.name+' · ':device.address+' · ')+device.rssi+' dBm';
+    if(row.name.textContent!==device.name)row.name.textContent=device.name;
+    if(row.meta.textContent!==description)row.meta.textContent=description;
+  }
+  for(const [key,{button}] of bandButtons){
+    if(!visible.has(key)){button.remove();bandButtons.delete(key);}
+  }
+  updateBandButtons();
 }
 async function openOptions(){result('options-result','');el('options-dialog').showModal();try{fillRiders(await fetchJSON('/api/riders'));}catch(e){result('options-result',e.message,true);}}
 async function openSettings(){if(el('options-dialog').open)el('options-dialog').close();el('settings-dialog').showModal();try{await loadSettings();}catch(e){el('settings-warning').hidden=false;text('settings-warning',e.message);}}
@@ -476,23 +617,99 @@ el('options-open').addEventListener('click',openOptions);
 el('options-close').addEventListener('click',()=>el('options-dialog').close());
 el('settings-open').addEventListener('click',openSettings);
 el('band-settings').addEventListener('click',openSettings);
-el('band-rider').addEventListener('change',()=>{updateBandLink();refreshSensor().catch(()=>{});});
-el('band-unlink').addEventListener('click',async()=>{try{await post('/api/hr/sensor','hr-sensor',{action:'unlink',rider_id:el('band-rider').value});fillRiders(await fetchJSON('/api/riders'));result('sensor-result','Band unlinked from this rider.');await refreshSensor();}catch(e){result('sensor-result',e.message,true);}});
+el('band-rider').addEventListener('change',()=>{updateBandLink();updateBandButtons();refreshSensor().catch(()=>{});});
+el('band-unlink').addEventListener('click',async()=>{
+  if(sensorBusy)return;
+  sensorBusy=true;updateBandButtons();updateBandLink();
+  try{
+    await post('/api/hr/sensor','hr-sensor',{action:'unlink',rider_id:el('band-rider').value});
+    await refreshRiders();result('sensor-result','Band unlinked from this rider.');
+  }catch(error){result('sensor-result',await checkAfterWrite(error,refreshRiders),true);}
+  finally{sensorBusy=false;updateBandButtons();updateBandLink();refreshSensor().catch(()=>{});}
+});
 el('choose-rider-open').addEventListener('click',showRiderChoice);
 el('rider-choice-close').addEventListener('click',()=>el('rider-choice-dialog').close());
 el('rider-choice-options').addEventListener('click',()=>{el('rider-choice-dialog').close();openOptions();});
 el('settings-close').addEventListener('click',()=>el('settings-dialog').close());
-el('rider-select').addEventListener('change',async()=>{try{fillRiders(await post('/api/riders/select','rider-select',{id:el('rider-select').value}));await reloadRide();result('options-result','Rider selected.');}catch(e){result('options-result',e.message,true);fillRiders(await fetchJSON('/api/riders'));}});
-el('edit-rider').addEventListener('change',editRider);
-el('rider-form').addEventListener('submit',async event=>{event.preventDefault();const button=event.submitter;button.disabled=true;
-  try{const data=await post('/api/riders','riders',{id:el('edit-rider').value,name:el('rider-name').value,sex:el('rider-sex').value,age:el('rider-age').value,weight_kg:el('rider-weight').value,max_hr:el('rider-maxhr').value});fillRiders(data);if(data.saved_id){el('edit-rider').value=String(data.saved_id);editRider();}result('rider-result','Rider saved on the ATOM. Select them in Options before starting.');}
-  catch(e){result('rider-result',e.message,true);}finally{button.disabled=false;}});
+el('rider-select').addEventListener('change',async()=>{
+  try{
+    fillRiders(await post('/api/riders/select','rider-select',{id:el('rider-select').value}));
+    await reloadRide();result('options-result','Rider selected.');
+  }catch(error){
+    const message=await checkAfterWrite(error,refreshRiders);
+    if(!error.uncertain)await refreshRiders().catch(()=>{});
+    result('options-result',message,true);
+  }
+});
+el('edit-rider').addEventListener('change',()=>{riderCreateKey='';editRider();});
+el('rider-form').addEventListener('submit',async event=>{
+  event.preventDefault();
+  const button=event.submitter, editor=el('edit-rider');
+  if(button.disabled)return;
+  button.disabled=editor.disabled=true;
+  const fields={id:editor.value,name:el('rider-name').value,sex:el('rider-sex').value,age:el('rider-age').value,
+    weight_kg:el('rider-weight').value,max_hr:el('rider-maxhr').value,ftp_w:el('rider-ftp').value};
+  try{
+    if(fields.id==='0'){
+      if(!riderCreateKey)riderCreateKey=newRiderCreateKey();
+      fields.create_key=riderCreateKey;
+    }
+    const data=await post('/api/riders','riders',fields);
+    fillRiders(data);
+    if(data.saved_id){
+      riderCreateKey='';
+      editor.value=String(data.saved_id);
+      editRider(data.already_saved===true);
+    }
+    result('rider-result',data.already_saved
+      ? 'Rider was already saved. Press Save again to apply any edits.'
+      : 'Rider saved on the ATOM. Select them in Options before starting.');
+  }catch(error){
+    const message=await checkAfterWrite(error,refreshRiders);
+    result('rider-result',fields.create_key&&error.uncertain?'Save was unconfirmed. Retry Save to check whether the profile was created.':message,true);
+  }finally{button.disabled=editor.disabled=false;}
+});
 el('auto-form').addEventListener('submit',async event=>{event.preventDefault();const button=event.submitter;button.disabled=true;
   try{await post('/api/settings','settings',{auto_start:el('auto-start').checked?'1':'0',auto_stop:el('auto-stop').checked?'1':'0',start_seconds:el('start-seconds').value,stop_seconds:el('stop-seconds').value});result('auto-result','Automatic controls saved on the ATOM.');}
-  catch(e){result('auto-result',e.message,true);}finally{button.disabled=false;}});
+  catch(e){result('auto-result',await checkAfterWrite(e,loadSettings),true);}finally{button.disabled=false;}});
 el('hr-scan').addEventListener('click',async()=>{try{await post('/api/hr/sensor','hr-sensor',{action:'scan'});result('sensor-result','Scanning for 15 seconds. If nothing appears, check the band is worn and has a free Bluetooth connection.');await refreshSensor();}catch(e){result('sensor-result',e.message,true);}});
 el('wifi-change').addEventListener('click',()=>{el('options-dialog').close();el('wifi-dialog').showModal();});el('wifi-close').addEventListener('click',()=>el('wifi-dialog').close());
-el('retry').addEventListener('click',async()=>{el('retry').disabled=true;try{await fetchJSON('/api/retry',{method:'POST'});}catch(error){text('live-hint',error.message);}finally{el('retry').disabled=false;}});
+el('retry').addEventListener('click',async()=>{el('retry').disabled=true;try{await post('/api/retry','retry');}catch(error){text('live-hint',error.message);}finally{el('retry').disabled=false;}});
+
+let recoveringHistory=false;
+el('recover-history').addEventListener('click',()=>{
+  result('recover-result','');el('recover-dialog').showModal();
+});
+el('recover-cancel').addEventListener('click',()=>el('recover-dialog').close());
+el('recover-dialog').addEventListener('cancel',event=>{if(recoveringHistory)event.preventDefault();});
+function showRecoveredHistory(){
+  el('recover-dialog').close();
+  text('history-result','Ride history is available again.');
+  el('history-result').hidden=false;
+}
+el('recover-confirm').addEventListener('click',async()=>{
+  if(recoveringHistory)return;
+  recoveringHistory=true;el('recover-confirm').disabled=true;el('recover-cancel').disabled=true;
+  result('recover-result','Verifying backup and restoring ride history…');
+  try{
+    const data=await post('/api/rides/recover','recover-history',{confirm:1});
+    ridesFresh=true;renderRides(data);showRecoveredHistory();
+  }catch(error){
+    const message=await checkAfterWrite(error,async()=>{
+      const data=await reloadRide();
+      if(data?.storage_ok&&!data.history_corrupt)showRecoveredHistory();
+    });
+    if(!error.uncertain)await reloadRide().catch(()=>{});
+    result('recover-result',message,true);
+  }finally{
+    recoveringHistory=false;el('recover-confirm').disabled=false;el('recover-cancel').disabled=false;
+    el('recover-history').disabled=!ridesFresh||rideData?.state==='recording';
+  }
+});
+
+function showDeletedHistory(id){
+  text('history-result','Ride '+id+' deleted.');el('history-result').hidden=false;el('delete-ride-dialog').close();
+}
 
 function askDeleteHistory(item){
   if(deletingHistory)return;
@@ -512,8 +729,14 @@ el('delete-ride-confirm').addEventListener('click',async()=>{
   const id=pendingHistoryDelete.id;deletingHistory=true;el('delete-ride-confirm').disabled=true;el('delete-ride-cancel').disabled=true;result('delete-ride-result','Deleting ride…');
   try{
     const data=await post('/api/rides/delete','delete-ride',{id});ridesFresh=true;renderRides(data);
-    text('history-result','Ride '+id+' deleted.');el('history-result').hidden=false;el('delete-ride-dialog').close();
-  }catch(error){result('delete-ride-result',error.message,true);}
+    showDeletedHistory(id);
+  }catch(error){
+    const message=await checkAfterWrite(error,async()=>{
+      const data=await reloadRide();
+      if(data?.storage_ok&&data.history?.every(ride=>ride.id!==id))showDeletedHistory(id);
+    });
+    result('delete-ride-result',message,true);
+  }
   finally{deletingHistory=false;el('delete-ride-confirm').disabled=false;el('delete-ride-cancel').disabled=false;renderHistory();}
 });
 
@@ -558,77 +781,71 @@ window.addEventListener('resize',closeTooltip);
 window.addEventListener('scroll',closeTooltip,{passive:true});
 
 
-// Live gauge and rolling sensor chart.
+// Live readouts and the rolling sensor chart.
 const zoneColors=['#9d9d9d','#00a5ff','#9efb32','#ffa800','#ff4148'];
-const zoneEfforts=['Warm up','Easy','Aerobic','Hard','Maximum'];
+const powerZoneLimits=[55,75,90,105,120,150];
+const powerZoneColors=[...zoneColors,'#be8bff','#ff60b2'];
+let focusMaxHR=null,trendData=null,trendReceivedAt=0,trendAttemptAt=-Infinity,trendMinutes=15;
 
-let focusBpm=null,focusMaxHR=null,trendData=null,trendReceivedAt=0,trendAttemptAt=-Infinity;
 function zoneFor(bpm){return focusMaxHR?Math.max(0,Math.min(4,Math.floor(bpm*10/focusMaxHR)-5)):null;}
-function zoneRange(zone){
-  if(zone===0)return 'Below '+Math.ceil(focusMaxHR*.6)+' bpm';
-  const low=Math.ceil(focusMaxHR*(zone+5)/10);
-  return zone===4?low+'+ bpm':low+' – '+(Math.ceil(focusMaxHR*(zone+6)/10)-1)+' bpm';
+function powerZoneFor(watts,ftp){
+  if(!Number.isFinite(watts)||watts<0||!Number.isFinite(ftp)||ftp<=0)return null;
+  const zone=powerZoneLimits.findIndex(limit=>watts*100<=limit*ftp);
+  return zone<0?powerZoneLimits.length:zone;
+}
+function renderReading(id,value,color){
+  const reading=el(id+'-value');
+  text(id,value===null?'—':value);
+  reading.classList.toggle('long',value!==null&&String(value).length>3);
+  reading.style.color=value===null?'var(--muted)':color;
+}
+function renderHeartRate(bpm){
+  const zone=bpm===null?null:zoneFor(bpm);
+  renderReading('hr',bpm,zone===null?'#fafafa':zoneColors[zone]);
+  text('hr-zone',zone===null?'':' · Zone '+(zone+1));
+}
+function renderPower(watts,ftp){
+  const zone=powerZoneFor(watts,ftp);
+  renderReading('power',Number.isFinite(watts)?watts:null,zone===null?'#fafafa':powerZoneColors[zone]);
+  el('power-value').title=Number.isFinite(watts)&&zone===null?'Set Cycling FTP in the rider profile to enable power colors.':'';
 }
 function chartContext(id){
   const c=el(id),r=c.getBoundingClientRect(),scale=window.devicePixelRatio||1;
   c.width=Math.round(r.width*scale);c.height=Math.round(r.height*scale);
   const ctx=c.getContext('2d');ctx.scale(scale,scale);return [ctx,r.width,r.height];
 }
-function curvedZoneLabel(ctx,label,cx,cy,radius,mid,fontSize){
-  ctx.font=`650 ${fontSize}px -apple-system,BlinkMacSystemFont,Arial`;
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  const glyphs=Array.from(label),spacing=fontSize*.025;
-  const widths=glyphs.map(letter=>ctx.measureText(letter).width);
-  const total=widths.reduce((sum,width)=>sum+width,0)+spacing*(glyphs.length-1);
-  // Follow the ring clockwise, including both lower arcs, so their labels
-  // keep the same upright orientation as the rest of the dial.
-  const direction=1;
-  let offset=-total/2;
-  glyphs.forEach((letter,index)=>{
-    const angle=mid+direction*(offset+widths[index]/2)/radius;
-    ctx.save();ctx.translate(cx+Math.cos(angle)*radius,cy+Math.sin(angle)*radius);
-    ctx.rotate(angle+direction*Math.PI/2);ctx.fillText(letter,0,0);ctx.restore();
-    offset+=widths[index]+spacing;
-  });
-}
-function drawGauge(active){
-  const [ctx,w,h]=chartContext('zone-gauge'),cx=w/2,cy=h*.53,r=Math.min(w*.405,h*.45),thick=r*.265;
-  for(let i=0;i<5;i++){
-    const start=(132+i*55.2)*Math.PI/180,end=(132+(i+1)*55.2-3.6)*Math.PI/180;
-    ctx.beginPath();ctx.arc(cx,cy,r,start,end);ctx.arc(cx,cy,r-thick,end,start,true);ctx.closePath();
-    const rgb=zoneColors[i].slice(1).match(/../g).map(v=>parseInt(v,16));
-    const gray=rgb[0]*.2126+rgb[1]*.7152+rgb[2]*.0722;
-    const muted='rgb('+rgb.map(v=>Math.round((v*.25+gray*.75)*.65)).join(',')+')';
-    ctx.fillStyle=i===active?zoneColors[i]:muted;ctx.globalAlpha=active===null?.55:1;ctx.fill();ctx.globalAlpha=1;
-    ctx.fillStyle=i===active?(i===2?'#061500':'#fff'):'#d6ddd8';
-    curvedZoneLabel(ctx,'Zone '+(i+1),cx,cy,r-thick/2,(start+end)/2,Math.max(11,w*.047));
-  }
-}
 function drawTrend(){
-  const [ctx,w,h]=chartContext('hr-chart'),wide=innerWidth>900,left=wide?42:30,right=w-(wide?55:40),top=wide?32:22,bottom=h-(wide?30:24);
+  const [ctx,w,h]=chartContext('hr-chart'),wide=innerWidth>900,windowSeconds=trendMinutes*60;
+  const top=wide?31:21,bottom=h-(wide?27:23);
   const powerColor='#d2bbff',elapsed=trendData?(performance.now()-trendReceivedAt)/1000:0;
   const selected=rideData?.selection,maxGap=(trendData?.interval_s||5)*1.5;
+  const showHeartRate=rideData?.active===true;
   const sameRider=trendData&&selected?.ready&&trendData.ready&&Number(trendData.rider_id)===Number(selected.rider_id);
-  const points=sameRider?trendData.points.map(p=>[p[0]+elapsed,p[1],p[2]]).filter(p=>p[0]<=1800):[];
+  const points=sameRider?trendData.points.map(([age,hr,watts])=>[age+elapsed,showHeartRate?hr:null,watts]).filter(p=>p[0]<=windowSeconds):[];
   const hrs=points.map(p=>p[1]).filter(v=>v!==null),watts=points.map(p=>p[2]).filter(v=>v!==null);
   const floor=Math.max(0,Math.floor(((hrs.length?Math.min(...hrs):90)-10)/20)*20);
   const ceiling=Math.max(floor+40,Math.ceil(((hrs.length?Math.max(...hrs):170)+10)/20)*20);
-  const powerCeiling=Math.max(400,Math.ceil((watts.length?Math.max(...watts):0)/100)*100);
-  const y=v=>bottom-(v-floor)/(ceiling-floor)*(bottom-top),powerY=v=>bottom-v/powerCeiling*(bottom-top),x=age=>right-age/1800*(right-left);
+  const peakPower=watts.length?Math.max(...watts):0;
+  const powerStep=Math.max(50,Math.ceil(peakPower/100)*25),powerCeiling=4*powerStep;
   ctx.font=(wide?'15px':'11px')+' -apple-system,BlinkMacSystemFont,Arial';ctx.textBaseline='middle';
-  ctx.textAlign='left';ctx.fillStyle='#b6dcb9';ctx.fillText('HR · bpm',left,wide?10:7);
+  const left=showHeartRate?Math.ceil(ctx.measureText(String(ceiling)).width)+8:8;
+  const right=w-Math.ceil(ctx.measureText(String(powerCeiling)).width)-10;
+  const y=v=>bottom-(v-floor)/(ceiling-floor)*(bottom-top),powerY=v=>bottom-v/powerCeiling*(bottom-top),x=age=>right-age/windowSeconds*(right-left);
+  if(showHeartRate){ctx.textAlign='left';ctx.fillStyle='#b6dcb9';ctx.fillText('HR · bpm',left,wide?10:7);}
   ctx.textAlign='right';ctx.fillStyle=powerColor;ctx.fillText('Power · W',right,wide?10:7);
-  ctx.font=(wide?'16px':'11px')+' -apple-system,BlinkMacSystemFont,Arial';
   for(let step=0;step<=4;step++){
     const value=floor+(ceiling-floor)*step/4,py=y(value);
     ctx.strokeStyle=wide?'#68766b':'#415046';ctx.lineWidth=.6;ctx.beginPath();ctx.moveTo(left,py);ctx.lineTo(right,py);ctx.stroke();
-    ctx.fillStyle='#b6dcb9';ctx.textAlign='right';ctx.fillText(Math.round(value),left-5,py);
-    ctx.fillStyle=powerColor;ctx.textAlign='left';ctx.fillText(Math.round(powerCeiling*step/4),right+7,py);
+    if(showHeartRate){ctx.fillStyle='#b6dcb9';ctx.textAlign='right';ctx.fillText(Math.round(value),left-5,py);}
+    ctx.fillStyle=powerColor;ctx.textAlign='left';ctx.fillText(powerStep*step,right+7,py);
   }
-  [-30,-20,-10,0].forEach((v,i)=>{
-    const px=left+i/3*(right-left);ctx.strokeStyle='#415046';ctx.beginPath();ctx.moveTo(px,top);ctx.lineTo(px,bottom);ctx.stroke();
-    ctx.fillStyle='#b6dcb9';ctx.textAlign=i===0?'left':i===3?'right':'center';ctx.fillText(v===0?'Now':v+':00',px,h-9);
-  });
+  const tickIntervals=right-left<180?2:3;
+  for(let i=0;i<=tickIntervals;i++){
+    const seconds=windowSeconds*(tickIntervals-i)/tickIntervals;
+    const px=x(seconds);ctx.strokeStyle='#415046';ctx.beginPath();ctx.moveTo(px,top);ctx.lineTo(px,bottom);ctx.stroke();
+    const label=seconds===0?'Now':'-'+Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0');
+    ctx.fillStyle='#b6dcb9';ctx.textAlign=i===0?'left':i===tickIntervals?'right':'center';ctx.fillText(label,px,h-9);
+  }
   ctx.save();ctx.beginPath();ctx.rect(left,top,right-left,bottom-top);ctx.clip();
   for(let i=1;i<points.length;i++){
     const a=points[i-1],b=points[i];
@@ -649,20 +866,16 @@ function drawTrend(){
   }
   ctx.restore();
   const validCount=points.filter(p=>p[1]!==null||p[2]!==null).length;
-  text('trend-note',!selected?.ready?'Choose a rider to see their chart.':validCount<2?'Collecting live readings…':'Last 30 minutes · live, including while recording is stopped');
-  el('hr-chart').setAttribute('aria-label','Live heart rate in bpm on the left axis and power in watts on the right, over the last 30 minutes. Missing readings are gaps.');
+  const otherMinutes=trendMinutes===30?15:30;
+  const summary=!selected?.ready?'Choose a rider':validCount<2?'Waiting for readings':'Last '+trendMinutes+' minutes';
+  if(el('trend-note').textContent!==summary)text('trend-note',summary);
+  el('trend-toggle').setAttribute('aria-label',(showHeartRate?'Heart rate and power':'Power')+' chart, last '+trendMinutes+' minutes. Switch to '+otherMinutes+' minutes.');
 }
-function renderHeartFocus(bpm){
-  focusBpm=bpm;const zone=bpm===null?null:zoneFor(bpm);
-  document.querySelector('.hr-focus').dataset.missing=String(bpm===null);
-  document.querySelector('.hr-focus').style.setProperty('--zone-color',zone===null?'#adcaaf':zoneColors[zone]);
-  text('zone-name',bpm===null?'No HR reading':zone===null?'Set max HR':'Zone '+(zone+1));
-  text('zone-effort',bpm===null?'Check band':zone===null?'In Settings':zoneEfforts[zone]);
-  text('zone-range',zone===null?'— bpm':zoneRange(zone));
-  el('zone-info').title=focusMaxHR?'Zones use maximum HR '+focusMaxHR+' bpm: below 60%, 60–70%, 70–80%, 80–90%, and 90%+.':'Set maximum HR in the rider profile to enable zones.';
-  drawGauge(zone);drawTrend();
-}
-new ResizeObserver(()=>renderHeartFocus(focusBpm)).observe(el('zone-gauge'));
+el('trend-toggle').addEventListener('click',()=>{
+  trendMinutes=trendMinutes===30?15:30;
+  drawTrend();
+});
+new ResizeObserver(drawTrend).observe(el('hr-chart'));
 
 refresh();
 </script></body></html>

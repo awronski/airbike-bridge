@@ -7,8 +7,9 @@
 // Source: https://github.com/roelofkl/ha-assault-airbike/blob/main/docs/PROTOCOL.md
 namespace airbike {
 
-// The Assault AirBike Elite console stops advancing this counter at 19.995 km.
-constexpr uint32_t CONSOLE_DISTANCE_LIMIT_M = 19995;
+// The Elite's distance counter can stall near 20 km.
+constexpr uint32_t CONSOLE_DISTANCE_FALLBACK_MIN_M = 19995;
+constexpr uint32_t DATA_FRESH_MS = 4000;
 
 struct Metrics {
     uint16_t elapsed_s = 0;
@@ -50,7 +51,7 @@ inline bool decode(const uint8_t* bytes, size_t length, Metrics& result) {
 }
 
 inline bool isFresh(bool connected, bool has_data, uint32_t now_ms, uint32_t packet_ms) {
-    return connected && has_data && static_cast<uint32_t>(now_ms - packet_ms) < 4000;
+    return connected && has_data && static_cast<uint32_t>(now_ms - packet_ms) < DATA_FRESH_MS;
 }
 
 }  // namespace airbike

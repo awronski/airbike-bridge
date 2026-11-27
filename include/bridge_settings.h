@@ -4,11 +4,14 @@
 #include "ride_history.h"
 namespace app {
 constexpr size_t MAX_RIDERS = 10, NAME_BYTES = 49;
+constexpr uint16_t MAX_FTP_WATTS = 2000;
 struct Rider {
     uint32_t id = 0; char name[NAME_BYTES] = "Guest";
     uint8_t sex = 0, age = 0; // 0 unspecified, 1 female, 2 male
     uint16_t weightDeciKg = 0, maxHR = 0; // 0 means not supplied
+    uint16_t ftpWatts = 0; // 0 means not supplied
     char bandAddress[18] = "", bandName[64] = ""; uint8_t bandType = 0;
+    uint64_t createKey = 0; // Optional request identity for retrying creation.
 };
 inline bool validName(const char* s) {
     const size_t n = strnlen(s, NAME_BYTES);
@@ -34,11 +37,15 @@ struct Settings {
     uint16_t startS = 3, stopS = 10;
     char hrAddress[18] = "", hrName[64] = ""; uint8_t hrType = 0;
     const Rider* find(uint32_t id) const { for (size_t i=0;i<count;++i) if(riders[i].id==id)return &riders[i]; return nullptr; }
+    const Rider* findCreatedRider(uint64_t key) const {
+        if (key) for (size_t i=0;i<count;++i) if (riders[i].createKey==key) return &riders[i];
+        return nullptr;
+    }
     Rider selected() const { const auto* p=find(selectedID); return p ? *p : Rider{}; }
 };
 inline bool validRider(const Rider& r) {
     return r.id && validName(r.name) && r.sex <= 2 && r.age <= 120 && (!r.weightDeciKg || (r.weightDeciKg >= 10 && r.weightDeciKg <= 5000)) &&
-        (!r.maxHR || (r.maxHR >= 30 && r.maxHR <= 250));
+        (!r.maxHR || (r.maxHR >= 30 && r.maxHR <= 250)) && r.ftpWatts <= MAX_FTP_WATTS;
 }
 inline bool validAddress(const char* p) {
     if (!p[0]) return true;
@@ -76,6 +83,9 @@ inline bool valid(const Settings& s) {
 }
 constexpr size_t SETTINGS_V1_BYTES=128+MAX_RIDERS*64+4;
 constexpr size_t SETTINGS_BYTES=128+MAX_RIDERS*160+4;
+// Earlier version 2 writers zero-filled these reserved fields.
+constexpr size_t RIDER_FTP_OFFSET=144, RIDER_CREATE_KEY_OFFSET=146;
+static_assert(RIDER_CREATE_KEY_OFFSET+sizeof(uint64_t)<=160,"Rider fields fit the v2 record");
 inline void encode(const Settings& s, uint8_t* out) {
     memset(out,0,SETTINGS_BYTES); memcpy(out,"ABCF",4);out[4]=2;out[5]=s.count;out[106]=s.autoRider;
     rides::writeLE(out+8,s.nextID,4);rides::writeLE(out+12,s.selectedID,4);
@@ -84,6 +94,8 @@ inline void encode(const Settings& s, uint8_t* out) {
     for(size_t i=0;i<s.count;++i){const auto& r=s.riders[i];auto* p=out+128+i*160;
         rides::writeLE(p,r.id,4);memcpy(p+4,r.name,NAME_BYTES);p[53]=r.sex;p[54]=r.age;
         rides::writeLE(p+56,r.weightDeciKg,2);rides::writeLE(p+58,r.maxHR,2);memcpy(p+60,r.bandAddress,18);p[78]=r.bandType;memcpy(p+80,r.bandName,64);
+        rides::writeLE(p+RIDER_FTP_OFFSET,r.ftpWatts,2);
+        rides::writeLE(p+RIDER_CREATE_KEY_OFFSET,r.createKey,sizeof(r.createKey));
     }
     rides::writeLE(out+SETTINGS_BYTES-4,rides::checksum(out,SETTINGS_BYTES-4),4);
 }
@@ -97,7 +109,11 @@ inline bool decode(Settings& out, const uint8_t* p, size_t n) {
     for(size_t i=0;i<s.count;++i){auto& r=s.riders[i];const auto* q=p+128+i*(p[4]==1?64:160);
         r.id=rides::readLE(q,4);memcpy(r.name,q+4,NAME_BYTES);r.sex=q[53];r.age=q[54];
         r.weightDeciKg=rides::readLE(q+56,2);r.maxHR=rides::readLE(q+58,2);
-        if(p[4]==2){memcpy(r.bandAddress,q+60,18);r.bandType=q[78];memcpy(r.bandName,q+80,64);}
+        if(p[4]==2){
+            memcpy(r.bandAddress,q+60,18);r.bandType=q[78];memcpy(r.bandName,q+80,64);
+            r.ftpWatts=rides::readLE(q+RIDER_FTP_OFFSET,2);
+            r.createKey=rides::readLE(q+RIDER_CREATE_KEY_OFFSET,sizeof(r.createKey));
+        }
     }
     if(p[4]==1&&s.selectedID&&s.hrAddress[0]){
         for(size_t i=0;i<s.count;++i)if(s.riders[i].id==s.selectedID){

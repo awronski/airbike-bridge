@@ -33,7 +33,8 @@ Status snapshot(){portENTER_CRITICAL(&mux);Status s=status;portEXIT_CRITICAL(&mu
 void configure(const char* address,uint8_t type,const char* name){
     portENTER_CRITICAL(&mux);
     snprintf(status.name,sizeof(status.name),"%s",name);
-    if(strcmp(status.address,address)||targetType!=type){
+    const bool sameBand=app::sameBand(status.address,targetType,address,type);
+    if(!sameBand&&(status.address[0]||address[0]||targetType!=type)){
         snprintf(status.address,sizeof(status.address),"%s",address);snprintf(status.name,sizeof(status.name),"%s",name);
         targetType=type;status.type=type;changed=true;pending=false;status.configured=address[0];status.sample=heart::Sample{};
         snprintf(status.detail,sizeof(status.detail),"%s",address[0]?"Waiting for selected H10":"No Polar H10 selected");
@@ -58,7 +59,7 @@ void onAdvertised(const NimBLEAdvertisedDevice* device){
     std::transform(lower.begin(),lower.end(),lower.begin(),[](unsigned char c){return tolower(c);});
     const auto addr=device->getAddress();const auto address=addr.toString();
     portENTER_CRITICAL(&mux);
-    const bool selected=status.configured&&address==status.address&&addr.getType()==targetType;
+    const bool selected=status.configured&&app::sameBand(status.address,targetType,address.c_str(),addr.getType());
     const bool registered=isKnown(address.c_str(),addr.getType());
     if(lower.find("polar h10")==std::string::npos&&!selected&&!registered){portEXIT_CRITICAL(&mux);return;}
     Device found;snprintf(found.address,sizeof(found.address),"%s",address.c_str());snprintf(found.name,sizeof(found.name),"%s",name.empty()?"Polar H10":name.c_str());found.type=addr.getType();found.rssi=device->getRSSI();found.seenMs=millis();found.known=registered;
@@ -97,7 +98,7 @@ void poll(){
     diagnostic::record(diagnostic::SUBSCRIBE,diagnostic::POLAR,0x2a37,1);
     portENTER_CRITICAL(&mux);
     // A settings change during discovery must not publish the wrong band as connected.
-    const bool same=!strcmp(status.address,selected.address)&&targetType==selected.type;
+    const bool same=app::sameBand(status.address,targetType,selected.address,selected.type);
     if(same){status.sample.connected=true;snprintf(status.detail,sizeof(status.detail),"Connected to Polar H10");}
     portEXIT_CRITICAL(&mux);
     if(!same){disconnectIntent.store(diagnostic::WRONG_BAND);client->disconnect();}

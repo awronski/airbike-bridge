@@ -55,6 +55,19 @@ int main(){
     Tracker idle;tick(idle,cfg,0,0,0);idle.start(cfg.selected(),0);tick(idle,cfg,1000,1,5);idle.stop(true,1000);
     auto zero=bike(3,601000,2,5,0,0);idle.tick(zero,heartAt(601000),cfg,601000);
     assert(idle.pending&&idle.current.reason==session::INACTIVE);
+    // Manual Resume grants a full auto-stop window and a new inactivity deadline.
+    for(bool autoStart:{false,true}){
+        app::Settings timers;timers.autoStart=autoStart;
+        Tracker paused;tick(paused,timers,0,0,0);paused.start(timers.selected(),0);
+        tick(paused,timers,1000,1,5);paused.stop(true,1000);
+        tick(paused,timers,541000,1,5,0,0);paused.resume(541000);
+        tick(paused,timers,550999,1,5,0,0);
+        assert(paused.state==session::RECORDING&&!paused.pending);
+        tick(paused,timers,551000,1,5,0,0);
+        assert(paused.state==session::STOPPED&&!paused.manualStop&&!paused.pending);
+        tick(paused,timers,1140999,1,5,0,0);assert(!paused.pending);
+        tick(paused,timers,1141000,1,5,0,0);assert(paused.pending&&paused.current.reason==session::INACTIVE);
+    }
     // Disconnection and reset finish once without accumulating new-console deltas.
     Tracker d;tick(d,cfg,0,0,0);d.start(cfg.selected(),0);tick(d,cfg,1000,1,5);
     session::Input missing;d.tick(missing,heartAt(2000),cfg,2000);assert(d.pending&&d.current.reason==session::DISCONNECTED);
@@ -77,10 +90,30 @@ int main(){
     assert(session::decode(loaded,bytes,sizeof(bytes)));assert(loaded.records[0].durationMs==60000&&loaded.records[0].powerSum==6000000&&loaded.records[0].hrMs==0);
     assert(!strcmp(loaded.records[0].riderName,"Guest"));bytes[20]^=1;
     assert(!session::decode(loaded,bytes,sizeof(bytes))&&loaded.records[0].id==7);
+
+    // A late clock sync can date the original start across pause and timer rollover.
+    constexpr uint32_t unixSeconds = 1795478400;
+    constexpr uint32_t startMs = UINT32_MAX - 499;
+    Tracker dated;
+    dated.start(cfg.selected(), startMs);
+    dated.dateRideStart(startMs, 0);
+    assert(dated.current.startedAt == 0);
+    dated.stop(true, startMs + 500);
+    dated.resume(startMs + 900);
+    dated.dateRideStart(startMs + 1000, uint64_t(unixSeconds) * 1000 + 250);
+    assert(dated.current.startedAt == unixSeconds - 1);
+    dated.dateRideStart(startMs + 2000, uint64_t(unixSeconds) * 1000 + 8500);
+    assert(dated.current.startedAt == unixSeconds - 1);
+    dated.finish(session::FINISHED, startMs + 2000);
+    session::encode(migrated, bytes, &dated.current);
+    assert(session::decode(loaded, bytes, sizeof(bytes)));
+    assert(loaded.count == 2 && loaded.records[0].startedAt == unixSeconds - 1);
+    assert(loaded.records[1].id == 7 && loaded.records[1].startedAt == 0);
+
     for(unsigned i=0;i<25;++i){session::Record r;r.reason=session::FINISHED;migrated.add(r);}
     assert(migrated.count==20&&migrated.records[0].id==32&&migrated.records[19].id==13);
     // Timer wraparound cannot cause an early automatic stop.
     Tracker wrap;auto b=bike(1,UINT32_MAX-1000,0,0);wrap.tick(b,{},cfg,UINT32_MAX-1000);wrap.start(cfg.selected(),UINT32_MAX-1000);
     b=bike(2,0,1,5);wrap.tick(b,{},cfg,0);assert(wrap.state==session::RECORDING&&wrap.current.durationMs==1001);
-    puts("Session transitions, auto timers, coasting/final packets, paused totals, HR coverage, rider snapshots, migration and storage passed.");
+    puts("Session transitions, auto timers, paused totals, HR coverage, rider snapshots and dated/legacy ride storage passed.");
 }
